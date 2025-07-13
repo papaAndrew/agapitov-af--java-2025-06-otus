@@ -1,5 +1,5 @@
 rootProject.name = "agapitov-java"
-//include("HW01-gradle")
+include("HW01-gradle")
 include("HW04-Generics")
 
 
