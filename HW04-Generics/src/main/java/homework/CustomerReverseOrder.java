@@ -1,20 +1,17 @@
 package homework;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class CustomerReverseOrder extends CustomerService {
 
-    private final List<Customer> customers = new ArrayList<>();
-
-    private int currentIndex = -1;
+    private final Deque<Customer> customers = new ArrayDeque<>();
 
     public void add(Customer customer) {
         customers.add(customer);
-        currentIndex++;
     }
 
     public Customer take() {
-        return currentIndex < 0 ? null : customers.get(currentIndex--);
+        return customers.pollLast();
     }
 }
