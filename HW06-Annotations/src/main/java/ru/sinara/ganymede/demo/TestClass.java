@@ -17,11 +17,18 @@ public class TestClass {
     }
 
     @Test
-    void test() {}
+    void test1() {
+        System.out.println("Ganymede test1 method");
+    }
+
+    @Test
+    void test2() {
+        System.out.println("Ganymede test2 method");
+    }
 
     @After
     void tearDown() {
 
-        System.out.println("Jupiter test");
+        System.out.println("Ganymede test Tear down");
     }
 }
