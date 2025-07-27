@@ -4,7 +4,7 @@ import ru.sinara.ganymede.annotations.After;
 import ru.sinara.ganymede.annotations.Before;
 import ru.sinara.ganymede.annotations.Test;
 
-public class TestClass {
+public class IdealAppTest {
 
     @Before
     void setUp1() {

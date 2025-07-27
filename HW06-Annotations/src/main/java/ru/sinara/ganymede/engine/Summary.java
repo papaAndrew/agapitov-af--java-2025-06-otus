@@ -27,7 +27,7 @@ public class Summary {
     }
 
     public void addPassed(Integer inc) {
-        passed +=inc;
+        passed += inc;
     }
 
     private Integer failed = 0;
@@ -36,9 +36,12 @@ public class Summary {
         return failed;
     }
 
-
     public void addFailed(Integer inc) {
-        failed +=inc;
+        failed += inc;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Total:\t%d\nPassed:\t%d\nFailed:\t%d", total, passed, failed);
+    }
 }
