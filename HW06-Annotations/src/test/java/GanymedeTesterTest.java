@@ -8,7 +8,7 @@ import ru.sinara.ganymede.engine.Summary;
 
 public class GanymedeTesterTest {
 
-    GanymedeTester ganymedeTester;
+    private GanymedeTester ganymedeTester;
 
     @BeforeEach
     void beforeEach() {

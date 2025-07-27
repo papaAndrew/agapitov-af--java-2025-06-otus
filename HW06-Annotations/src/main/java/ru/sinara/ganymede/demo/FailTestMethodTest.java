@@ -4,6 +4,7 @@ import ru.sinara.ganymede.annotations.After;
 import ru.sinara.ganymede.annotations.Before;
 import ru.sinara.ganymede.annotations.Test;
 
+@SuppressWarnings({"java:S106", "java:S112"})
 public class FailTestMethodTest {
 
     @Before

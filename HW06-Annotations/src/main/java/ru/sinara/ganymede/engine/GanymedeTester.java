@@ -6,7 +6,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.reflection.ReflectionHelper;
@@ -73,6 +72,6 @@ public class GanymedeTester {
             Class<?> hostClass, Class<? extends Annotation> annotationClass) {
         return Arrays.stream(hostClass.getDeclaredMethods())
                 .filter(m -> m.isAnnotationPresent(annotationClass))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

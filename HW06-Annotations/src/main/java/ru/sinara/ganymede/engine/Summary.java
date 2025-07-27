@@ -42,6 +42,6 @@ public class Summary {
 
     @Override
     public String toString() {
-        return String.format("Total:\t%d\nPassed:\t%d\nFailed:\t%d", total, passed, failed);
+        return String.format("Total:\t%d%nPassed:\t%d%nFailed:\t%d", total, passed, failed);
     }
 }

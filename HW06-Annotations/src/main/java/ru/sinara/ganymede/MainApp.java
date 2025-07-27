@@ -2,6 +2,7 @@ package ru.sinara.ganymede;
 
 import ru.sinara.ganymede.engine.GanymedeTester;
 
+// @SuppressWarnings("java:S112")
 public class MainApp {
 
     public static void main(String[] args) {
@@ -12,7 +13,7 @@ public class MainApp {
         try {
             tester.runTests(classRef);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 }
