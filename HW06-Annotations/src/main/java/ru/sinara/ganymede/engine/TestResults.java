@@ -1,16 +1,13 @@
 package ru.sinara.ganymede.engine;
 
-public class Summary {
-
-    public static Summary getInstance(Integer total) {
-        Summary summary = new Summary();
-        if (total == null) return summary;
-
-        summary.setTotal(total);
-        return summary;
-    }
+public class TestResults {
 
     private Integer total = 0;
+
+    private Integer failed = 0;
+
+    private Integer passed = 0;
+
 
     public Integer getTotal() {
         return total;
@@ -20,7 +17,6 @@ public class Summary {
         this.total = total;
     }
 
-    private Integer passed = 0;
 
     public Integer getPassed() {
         return passed;
@@ -29,8 +25,6 @@ public class Summary {
     public void addPassed(Integer inc) {
         passed += inc;
     }
-
-    private Integer failed = 0;
 
     public Integer getFailed() {
         return failed;
@@ -44,4 +38,13 @@ public class Summary {
     public String toString() {
         return String.format("Total:\t%d%nPassed:\t%d%nFailed:\t%d", total, passed, failed);
     }
+
+    public static TestResults create(Integer total) {
+        TestResults testResults = new TestResults();
+        if (total == null) return testResults;
+
+        testResults.setTotal(total);
+        return testResults;
+    }
+
 }

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.sinara.ganymede.engine.GanymedeTester;
-import ru.sinara.ganymede.engine.Summary;
+import ru.sinara.ganymede.engine.TestResults;
 
 public class GanymedeTesterTest {
 
@@ -24,39 +24,39 @@ public class GanymedeTesterTest {
     void idealTest() throws ClassNotFoundException {
         GanymedeTester ganymedeTester = GanymedeTester.getInstance();
 
-        Summary summary = ganymedeTester.runTests("ru.sinara.ganymede.demo.IdealAppTest");
-        assertThat(summary.getTotal()).isEqualTo(2);
-        assertThat(summary.getPassed()).isEqualTo(2);
-        assertThat(summary.getFailed()).isEqualTo(0);
+        TestResults testResults = ganymedeTester.runTests("ru.sinara.ganymede.demo.IdealAppTest");
+        assertThat(testResults.getTotal()).isEqualTo(2);
+        assertThat(testResults.getPassed()).isEqualTo(2);
+        assertThat(testResults.getFailed()).isEqualTo(0);
     }
 
     @Test
     @DisplayName("Test failed on BeforeEach stage")
     void failedOnSetUp() throws ClassNotFoundException {
 
-        Summary summary = ganymedeTester.runTests("ru.sinara.ganymede.demo.FailSetupTest");
-        assertThat(summary.getTotal()).isEqualTo(2);
-        assertThat(summary.getPassed()).isEqualTo(0);
-        assertThat(summary.getFailed()).isEqualTo(2);
+        TestResults testResults = ganymedeTester.runTests("ru.sinara.ganymede.demo.FailSetupTest");
+        assertThat(testResults.getTotal()).isEqualTo(2);
+        assertThat(testResults.getPassed()).isEqualTo(0);
+        assertThat(testResults.getFailed()).isEqualTo(2);
     }
 
     @Test
     @DisplayName("Test failed on AfterEach stage")
     void failedOnTearDown() throws ClassNotFoundException {
 
-        Summary summary = ganymedeTester.runTests("ru.sinara.ganymede.demo.FailTearDownTest");
-        assertThat(summary.getTotal()).isEqualTo(2);
-        assertThat(summary.getPassed()).isEqualTo(0);
-        assertThat(summary.getFailed()).isEqualTo(2);
+        TestResults testResults = ganymedeTester.runTests("ru.sinara.ganymede.demo.FailTearDownTest");
+        assertThat(testResults.getTotal()).isEqualTo(2);
+        assertThat(testResults.getPassed()).isEqualTo(0);
+        assertThat(testResults.getFailed()).isEqualTo(2);
     }
 
     @Test
     @DisplayName("Test failed on TestMethod stage")
     void failedOnTestMethod() throws ClassNotFoundException {
 
-        Summary summary = ganymedeTester.runTests("ru.sinara.ganymede.demo.FailTestMethodTest");
-        assertThat(summary.getTotal()).isEqualTo(3);
-        assertThat(summary.getPassed()).isEqualTo(2);
-        assertThat(summary.getFailed()).isEqualTo(1);
+        TestResults testResults = ganymedeTester.runTests("ru.sinara.ganymede.demo.FailTestMethodTest");
+        assertThat(testResults.getTotal()).isEqualTo(3);
+        assertThat(testResults.getPassed()).isEqualTo(2);
+        assertThat(testResults.getFailed()).isEqualTo(1);
     }
 }

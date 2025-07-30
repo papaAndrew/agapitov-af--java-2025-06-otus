@@ -20,7 +20,7 @@ public class GanymedeTester {
         return new GanymedeTester();
     }
 
-    public Summary runTests(Class<?> testingClass) {
+    public TestResults runTests(Class<?> testingClass) {
 
         LOG.info("Run Tests of class `{}`", testingClass.getName());
 
@@ -28,7 +28,7 @@ public class GanymedeTester {
         List<Method> methodsTest = collectMethodsAnnotated(testingClass, Test.class);
         List<Method> methodsAfter = collectMethodsAnnotated(testingClass, After.class);
 
-        Summary summary = Summary.getInstance(methodsTest.size());
+        TestResults testResults = TestResults.create(methodsTest.size());
         for (Method method : methodsTest) {
             // create object
             var app = ReflectionHelper.instantiate(testingClass);
@@ -39,18 +39,18 @@ public class GanymedeTester {
                 LOG.info("Test executed `{}.{}`", app, method.getName());
                 doAfterEach(app, methodsAfter);
 
-                summary.addPassed(1);
+                testResults.addPassed(1);
             } catch (Exception e) {
                 LOG.warn("Test failed `{}.{}`", app, method.getName());
-                summary.addFailed(1);
+                testResults.addFailed(1);
             }
         }
-        LOG.info("Tests are over.\n=== Summary ===\n{}", summary);
+        LOG.info("Tests are over.\n=== Summary ===\n{}", testResults);
 
-        return summary;
+        return testResults;
     }
 
-    public Summary runTests(String classRef) throws ClassNotFoundException {
+    public TestResults runTests(String classRef) throws ClassNotFoundException {
         return runTests(Class.forName(classRef));
     }
 
