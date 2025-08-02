@@ -25,3 +25,4 @@ pluginManagement {
     }
 }
 include("HW06-Annotations")
+include("HW08-GC")

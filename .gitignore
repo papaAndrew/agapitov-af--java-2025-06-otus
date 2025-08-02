@@ -57,3 +57,4 @@ build/
 
 # Log file
 *.log
+logs/
