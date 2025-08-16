@@ -1,5 +1,9 @@
 package ru.sinara;
 
 public interface TestLogging {
-    void calculation(int param);
+    void calculate(int param);
+
+    void calculate(String param);
+
+    void calculate(int param1, String param2);
 }
