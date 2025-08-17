@@ -2,11 +2,16 @@ package ru.sinara.atm;
 
 import java.util.ArrayList;
 import java.util.List;
+import ru.sinara.atm.exception.AtmException;
 
 public class BasicAtmImpl implements BasicAtm {
 
-    private final List<Integer> cells = new ArrayList<>();
+    private final List<AtmCell> cells = new ArrayList<>();
 
+    // here atmCells factory could be injected
+    private static AtmCell createAtmCell() {
+        return new AtmCellImpl();
+    }
 
     @Override
     public int getCapacity() {
@@ -16,28 +21,26 @@ public class BasicAtmImpl implements BasicAtm {
     @Override
     public BasicAtm capacity(int maxCount) {
         if (getCapacity() > 0) {
-            throw new ArrayStoreException("This operation needs the ATM reset first");
+            throw new AtmException("ATM already initialised");
         }
-        for (int idx = 0; idx < maxCount) {
-
+        for (int i = 0; i < maxCount; i++) {
+            cells.add(createAtmCell());
         }
         return this;
     }
 
     @Override
-    public void chargeCell(int cellId, int banknotes) {}
+    public BasicAtm reset() {
+        cells.clear();
+        return this;
+    }
 
     @Override
-    public void dischargeCell(int cellId, int banknotes) {}
-
-    @Override
-    public void dischargeCell(int cellId) {}
-
-    @Override
-    public void discharge() {}
-
-    @Override
-    public int showCell(int cellId) {
-        return cells.get(cellId);
+    public AtmCell getCell(int cellId) {
+        try {
+            return cells.get(cellId);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 }
