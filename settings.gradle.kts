@@ -1,7 +1,4 @@
 rootProject.name = "agapitov-java"
-include("HW01-gradle")
-include("HW04-Generics")
-
 
 pluginManagement {
     val jgitver: String by settings
@@ -24,5 +21,9 @@ pluginManagement {
         id("com.diffplug.spotless") version spotless
     }
 }
+
+include("HW01-gradle")
+include("HW04-Generics")
 include("HW06-Annotations")
 include("HW08-GC")
+include("HW12-Solid")
