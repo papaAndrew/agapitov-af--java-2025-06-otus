@@ -7,7 +7,6 @@ import java.util.random.RandomGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.sinara.atm.exception.AtmException;
 
 public class BasicAtmTest {
     private static final Random random = Random.from(RandomGenerator.getDefault());
@@ -28,40 +27,19 @@ public class BasicAtmTest {
     }
 
     @Test
-    @DisplayName("Capacity is equal to configured value. Cannot change capacity")
-    public void testCellsCount() {
+    @DisplayName("AddCell returns address of Cell")
+    public void testAddCell() {
         int initialCells = genInitialCells();
-        basicAtm.capacity(initialCells);
-
-        assertThat(basicAtm.getCapacity()).isEqualTo(initialCells);
-
-        assertThatExceptionOfType(AtmException.class).isThrownBy(() -> basicAtm.capacity(initialCells + 1));
-    }
-
-    @Test
-    @DisplayName("Capacity can be reset")
-    public void testReinitAtm() {
-        int capacity1 = genInitialCells();
-        basicAtm.capacity(capacity1);
-        assertThat(basicAtm.getCapacity()).isEqualTo(capacity1);
-
-        basicAtm.reset();
-        assertThat(basicAtm.getCapacity()).isEqualTo(0);
-
-        int capacity2 = genInitialCells();
-        basicAtm.capacity(capacity2);
-        assertThat(basicAtm.getCapacity()).isEqualTo(capacity2);
-
-        basicAtm.reset().capacity(capacity1);
-        assertThat(basicAtm.getCapacity()).isEqualTo(capacity1);
+        for (int i = 0; i < initialCells; i++) {
+            assertThat(basicAtm.addCell()).isEqualTo(i);
+        }
     }
 
     @Test
     @DisplayName("Access to Cell")
     public void testGetCell() {
-        int capacity = genInitialCells();
-        basicAtm.capacity(capacity);
-        assertThat(basicAtm.getCell(capacity - 1)).isInstanceOf(AtmCell.class);
-        assertThat(basicAtm.getCell(capacity)).isNull();
+        int address = basicAtm.addCell();
+        assertThat(basicAtm.getCell(address)).isInstanceOf(AtmCell.class);
+        assertThat(basicAtm.getCell(address + 1)).isNull();
     }
 }

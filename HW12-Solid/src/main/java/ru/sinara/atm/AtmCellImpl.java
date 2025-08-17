@@ -12,16 +12,11 @@ public class AtmCellImpl implements AtmCell {
     }
 
     @Override
-    public void add(int bills) {
-        this.count += bills;
-    }
-
-    @Override
-    public void remove(int bills) {
-        if (bills > count) {
-            throw new AtmException("Cannot remove this number of items");
+    public void add(int items) throws AtmException {
+        if ((count + items) < 0) {
+            throw new AtmException("Not enough items");
         }
-        this.count -= bills;
+        this.count += items;
     }
 
     @Override

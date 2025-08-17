@@ -13,14 +13,14 @@ public interface AtmCell {
      * Replenish Cell
      * @param bills count
      */
-    void add(int bills);
+    void add(int bills) throws AtmException;
 
-    /**
-     * Decrease bills from Cell
-     * @param bills count
-     * @throws AtmException no such items
-     */
-    void remove(int bills) throws AtmException;
+    //    /**
+    //     * Decrease bills from Cell
+    //     * @param bills count
+    //     * @throws AtmException no such items
+    //     */
+    //    void remove(int bills) throws AtmException;
 
     /**
      * Remove all banknotes and clear Cell

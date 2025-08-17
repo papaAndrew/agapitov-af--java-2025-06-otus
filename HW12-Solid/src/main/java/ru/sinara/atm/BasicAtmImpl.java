@@ -2,7 +2,6 @@ package ru.sinara.atm;
 
 import java.util.ArrayList;
 import java.util.List;
-import ru.sinara.atm.exception.AtmException;
 
 public class BasicAtmImpl implements BasicAtm {
 
@@ -13,20 +12,14 @@ public class BasicAtmImpl implements BasicAtm {
         return new AtmCellImpl();
     }
 
-    @Override
     public int getCapacity() {
         return cells.size();
     }
 
     @Override
-    public BasicAtm capacity(int maxCount) {
-        if (getCapacity() > 0) {
-            throw new AtmException("ATM already initialised");
-        }
-        for (int i = 0; i < maxCount; i++) {
-            cells.add(createAtmCell());
-        }
-        return this;
+    public int addCell() {
+        cells.add(createAtmCell());
+        return cells.size() - 1;
     }
 
     @Override

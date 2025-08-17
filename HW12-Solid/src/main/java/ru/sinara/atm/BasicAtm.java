@@ -1,19 +1,12 @@
 package ru.sinara.atm;
 
-import ru.sinara.atm.exception.AtmException;
-
 public interface BasicAtm {
-    /**
-     * Get ATM cells capacity
-     * @return max count
-     */
-    int getCapacity();
 
     /**
-     * Set initial cells capacity
-     * @return this
+     * Add new Cell
+     * @return address
      */
-    BasicAtm capacity(int cellsCount) throws AtmException;
+    int addCell();
 
     /**
      * Clear capacity
