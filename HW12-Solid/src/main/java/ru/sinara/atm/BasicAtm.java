@@ -8,11 +8,6 @@ public interface BasicAtm {
      */
     int addCell();
 
-    /**
-     * Clear capacity
-     * @return this
-     */
-    BasicAtm reset();
 
     /**
      * AtmCell access by Id

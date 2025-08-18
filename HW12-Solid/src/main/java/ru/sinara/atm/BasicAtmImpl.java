@@ -22,11 +22,6 @@ public class BasicAtmImpl implements BasicAtm {
         return cells.size() - 1;
     }
 
-    @Override
-    public BasicAtm reset() {
-        cells.clear();
-        return this;
-    }
 
     @Override
     public AtmCell getCell(int cellId) {

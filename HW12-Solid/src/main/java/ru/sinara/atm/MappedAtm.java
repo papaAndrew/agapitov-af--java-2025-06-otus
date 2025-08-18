@@ -2,7 +2,7 @@ package ru.sinara.atm;
 
 import ru.sinara.atm.exception.AtmException;
 
-public interface AtmSupport {
+public interface MappedAtm {
     /**
      * Marks Cell as Denomination bills container
      * @param denomination own
@@ -16,7 +16,7 @@ public interface AtmSupport {
      * @param bills count
      * @return this
      */
-    AtmSupport addBills(Denomination denomination, int bills) throws AtmException;
+    MappedAtm addBills(Denomination denomination, int bills) throws AtmException;
 
     /**
      * Banknotes count
@@ -25,16 +25,5 @@ public interface AtmSupport {
      */
     int getBillsCount(Denomination denomination) throws AtmException;
 
-    /**
-     * Throws AtmException if Cell not found
-     * @param denomination criteria
-     * @throws AtmException Cell not found
-     */
-    void checkCellExists(Denomination denomination) throws AtmException;
 
-    /**
-     * Balance
-     * @return summa
-     */
-    long getBalance();
 }
