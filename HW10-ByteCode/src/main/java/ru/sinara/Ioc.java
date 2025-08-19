@@ -4,31 +4,43 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Ioc {
     private static final Logger log = LoggerFactory.getLogger(Ioc.class);
 
-    static TestLogging createTestLogging() {
-        InvocationHandler handler = new SpecInvocationHandler(new TestLoggingImpl());
+    static {
+    }
+
+    static TestLogging patch(TestLogging testLogging) {
+        InvocationHandler handler = new SpecInvocationHandler(testLogging);
 
         return (TestLogging)
                 Proxy.newProxyInstance(Ioc.class.getClassLoader(), new Class<?>[] {TestLogging.class}, handler);
     }
 
     static class SpecInvocationHandler implements InvocationHandler {
-        private static final Logger log = LoggerFactory.getLogger(TestLoggingImpl.class);
+        private final Logger log;
 
         private final TestLogging handledObject;
 
+        private final List<String> annotatedSignatures;
+
         SpecInvocationHandler(TestLogging testLogging) {
             this.handledObject = testLogging;
+            this.log = LoggerFactory.getLogger(testLogging.getClass());
+            this.annotatedSignatures = Arrays.stream(testLogging.getClass().getMethods())
+                    .filter(method -> method.isAnnotationPresent(Log.class))
+                    .map(SpecInvocationHandler::getMethodSignature)
+                    .toList();
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (isMethodAnnotatedWithLog(method)) {
+            String methodSignature = getMethodSignature(method);
+            if (annotatedSignatures.contains(methodSignature)) {
                 String argList = String.join(
                         ", ",
                         Arrays.stream(args)
@@ -44,9 +56,8 @@ public class Ioc {
             return String.format("%s{handledObject=%s}", SpecInvocationHandler.class.getSimpleName(), handledObject);
         }
 
-        private boolean isMethodAnnotatedWithLog(Method method) throws NoSuchMethodException {
-            Method handledMethod = handledObject.getClass().getMethod(method.getName(), method.getParameterTypes());
-            return handledMethod.getDeclaredAnnotation(Log.class) != null;
+        private static String getMethodSignature(Method method) {
+            return method.getName() + Arrays.toString(method.getParameterTypes());
         }
     }
 }

@@ -28,11 +28,11 @@ public class TestLoggingImplTest {
 
     @BeforeEach
     public void createTestLogging() {
-        testLogging = Ioc.createTestLogging();
+        testLogging = Ioc.patch(new TestLoggingImpl());
     }
 
     @Test
-    @DisplayName("Method annotated @Log does log out the specified message")
+    @DisplayName("Method annotated @Log does log the specified message out")
     public void testCalculationAnnotated() {
 
         for (int i = 0; i < 3; i++) {
@@ -47,7 +47,7 @@ public class TestLoggingImplTest {
     }
 
     @Test
-    @DisplayName("Method annotated @Log does log out the specified message")
+    @DisplayName("Method annotated @Log does log the specified message out")
     public void testMultiParamCalculationAnnotated() {
         for (int i = 0; i < 3; i++) {
             int param1 = random.nextInt();
@@ -62,7 +62,7 @@ public class TestLoggingImplTest {
     }
 
     @Test
-    @DisplayName("Method not annotated @Log doesn't log out the specified message")
+    @DisplayName("Method not annotated @Log doesn't log the specified message out")
     public void testCalculationNotAnnotated() {
         String param = UUID.randomUUID().toString();
         testLogging.calculate(param);

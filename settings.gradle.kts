@@ -1,11 +1,4 @@
 rootProject.name = "agapitov-java"
-include("HW01-gradle")
-include("HW04-Generics")
-include("HW06-Annotations")
-include("HW08-GC")
-include("HW10-ByteCode")
-
-
 
 pluginManagement {
     val jgitver: String by settings
@@ -27,4 +20,11 @@ pluginManagement {
         id("name.remal.sonarlint") version sonarlint
         id("com.diffplug.spotless") version spotless
     }
+
+    include("HW01-gradle")
+    include("HW04-Generics")
+    include("HW06-Annotations")
+    include("HW08-GC")
+    include("HW10-ByteCode")
+
 }
