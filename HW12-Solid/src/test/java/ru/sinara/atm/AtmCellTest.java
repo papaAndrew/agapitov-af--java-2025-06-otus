@@ -2,16 +2,12 @@ package ru.sinara.atm;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
-import java.util.Random;
-import java.util.random.RandomGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.sinara.atm.exception.AtmException;
 
 public class AtmCellTest {
-
-    private static final Random random = Random.from(RandomGenerator.getDefault());
 
     private AtmCell atmCell;
 
@@ -24,19 +20,6 @@ public class AtmCellTest {
     @DisplayName("New Cell contains a zero bills")
     public void testInit() {
         assertThat(atmCell.getCount()).isEqualTo(0);
-    }
-
-    @Test
-    @DisplayName("Count changed after once insert banknotes then clear")
-    public void testAddOnce() throws AtmException {
-        for (int i = 0; i < 10; i++) {
-            int cnt = random.nextInt(0, 1000);
-            atmCell.add(cnt);
-            assertThat(atmCell.getCount()).isEqualTo(cnt);
-
-            atmCell.clear();
-            assertThat(atmCell.getCount()).isEqualTo(0);
-        }
     }
 
     @Test

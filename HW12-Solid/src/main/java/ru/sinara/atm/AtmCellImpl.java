@@ -18,9 +18,4 @@ public class AtmCellImpl implements AtmCell {
         }
         this.count += items;
     }
-
-    @Override
-    public void clear() {
-        this.count = 0;
-    }
 }

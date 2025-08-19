@@ -15,11 +15,7 @@ public class BasicAtmTest {
         return random.nextInt(8, 16);
     }
 
-    private static int genBillsCount() {
-        return random.nextInt(1, 10000);
-    }
-
-    BasicAtm basicAtm;
+    private BasicAtm basicAtm;
 
     @BeforeEach
     public void reset() {
@@ -31,15 +27,7 @@ public class BasicAtmTest {
     public void testAddCell() {
         int initialCells = genInitialCells();
         for (int i = 0; i < initialCells; i++) {
-            assertThat(basicAtm.addCell()).isEqualTo(i);
+            assertThat(basicAtm.addCell(new AtmCellImpl())).isEqualTo(i);
         }
-    }
-
-    @Test
-    @DisplayName("Access to Cell")
-    public void testGetCell() {
-        int address = basicAtm.addCell();
-        assertThat(basicAtm.getCell(address)).isInstanceOf(AtmCell.class);
-        assertThat(basicAtm.getCell(address + 1)).isNull();
     }
 }
