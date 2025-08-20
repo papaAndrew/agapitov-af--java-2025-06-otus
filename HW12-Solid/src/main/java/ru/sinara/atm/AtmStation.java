@@ -7,7 +7,7 @@ public interface AtmStation {
 
     long getBalance();
 
-    AtmStation addCache(Denomination denomination, int bills) throws AtmException;
+    AtmStation addCash(Denomination denomination, int bills) throws AtmException;
 
-    Map<Denomination, Integer> giveCache(long amount) throws AtmException;
+    Map<Denomination, Integer> issueCash(long amount) throws AtmException;
 }

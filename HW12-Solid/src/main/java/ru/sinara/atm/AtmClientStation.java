@@ -20,7 +20,7 @@ public class AtmClientStation extends BasicAtmImpl implements AtmStation {
     }
 
     @Override
-    public AtmStation addCache(Denomination denomination, int bills) throws AtmException {
+    public AtmStation addCash(Denomination denomination, int bills) throws AtmException {
         MappedCell cell = cellMap.get(denomination);
         if (cell == null) {
             cell = addCell(denomination);
@@ -30,7 +30,7 @@ public class AtmClientStation extends BasicAtmImpl implements AtmStation {
     }
 
     @Override
-    public Map<Denomination, Integer> giveCache(long amount) throws AtmException {
+    public Map<Denomination, Integer> issueCash(long amount) throws AtmException {
         Map<Denomination, Integer> resultMap = new EnumMap<>(Denomination.class);
 
         Deque<MappedCell> deque = cellMap.entrySet().stream()
@@ -70,6 +70,8 @@ public class AtmClientStation extends BasicAtmImpl implements AtmStation {
             long givenCnt = Math.min(cnt, cell.getCount());
             long givenAmount = givenCnt * nom;
             reminder -= givenAmount;
+
+            commitMap.put(cell, Math.toIntExact(givenCnt));
         }
         return commitMap;
     }
