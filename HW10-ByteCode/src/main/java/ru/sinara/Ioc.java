@@ -4,7 +4,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ public class Ioc {
 
         private final TestLogging handledObject;
 
-        private final List<String> annotatedSignatures;
+        private final Set<String> annotatedSignatures;
 
         SpecInvocationHandler(TestLogging testLogging) {
             this.handledObject = testLogging;
@@ -34,7 +35,7 @@ public class Ioc {
             this.annotatedSignatures = Arrays.stream(testLogging.getClass().getMethods())
                     .filter(method -> method.isAnnotationPresent(Log.class))
                     .map(SpecInvocationHandler::getMethodSignature)
-                    .toList();
+                    .collect(Collectors.toSet());
         }
 
         @Override
