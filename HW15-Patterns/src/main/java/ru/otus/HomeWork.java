@@ -1,11 +1,13 @@
 package ru.otus;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.handler.ComplexProcessor;
 import ru.otus.listener.homework.HistoryListener;
 import ru.otus.model.Message;
+import ru.otus.model.ObjectForMessage;
 import ru.otus.processor.Processor;
 import ru.otus.processor.homework.OddTimeProcessor;
 import ru.otus.processor.homework.SwapFieldsProcessor;
@@ -37,6 +39,9 @@ public class HomeWork {
         var historyListener = new HistoryListener();
         complexProcessor.addListener(historyListener);
 
+        var field13 = new ObjectForMessage();
+        field13.setData(new ArrayList<>());
+
         var message = new Message.Builder(1L)
                 .field1("field1")
                 .field2("field2")
@@ -45,6 +50,7 @@ public class HomeWork {
                 .field10("field10")
                 .field11("field11")
                 .field12("field12")
+                .field13(field13)
                 .build();
 
         var result = complexProcessor.handle(message);
