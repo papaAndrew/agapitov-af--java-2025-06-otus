@@ -7,6 +7,7 @@ import ru.otus.handler.ComplexProcessor;
 import ru.otus.listener.homework.HistoryListener;
 import ru.otus.model.Message;
 import ru.otus.processor.Processor;
+import ru.otus.processor.homework.OddTimeProcessor;
 import ru.otus.processor.homework.SwapFieldsProcessor;
 
 public class HomeWork {
@@ -30,7 +31,7 @@ public class HomeWork {
           по аналогии с Demo.class
           из элеменов "to do" создать new ComplexProcessor и обработать сообщение
         */
-        List<Processor> processors = List.of(new SwapFieldsProcessor());
+        List<Processor> processors = List.of(new SwapFieldsProcessor(), new OddTimeProcessor());
 
         var complexProcessor = new ComplexProcessor(processors, ex -> {});
         var historyListener = new HistoryListener();
