@@ -270,7 +270,7 @@ public class Message {
         }
 
         private static ObjectForMessage copyObjectForMessage(ObjectForMessage fromObjectForMessage) {
-            if (Optional.ofNullable(fromObjectForMessage).isEmpty()) {
+            if (fromObjectForMessage == null) {
                 return null;
             }
             ObjectForMessage toObjectForMessage = new ObjectForMessage();

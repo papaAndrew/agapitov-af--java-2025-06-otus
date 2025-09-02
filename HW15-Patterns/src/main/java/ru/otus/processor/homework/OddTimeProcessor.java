@@ -1,16 +1,22 @@
 package ru.otus.processor.homework;
 
-import java.time.LocalDateTime;
 import java.util.InputMismatchException;
 import ru.otus.model.Message;
 import ru.otus.processor.Processor;
 
 public class OddTimeProcessor implements Processor {
 
+    private final OddSecondProvider oddSecondProvider;
+
+    public OddTimeProcessor(OddSecondProvider oddSecondProvider) {
+        this.oddSecondProvider = oddSecondProvider;
+    }
+
+
     @Override
     public Message process(Message message) {
-        boolean isEven = LocalDateTime.now().getSecond() % 2 == 0;
-        if (isEven) {
+        boolean even = oddSecondProvider.getSecond() % 2 == 0;
+        if (even) {
             throw new InputMismatchException("Process unavailable");
         }
 
