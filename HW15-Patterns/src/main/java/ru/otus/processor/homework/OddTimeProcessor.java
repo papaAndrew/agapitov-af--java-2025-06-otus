@@ -12,7 +12,6 @@ public class OddTimeProcessor implements Processor {
         this.oddSecondProvider = oddSecondProvider;
     }
 
-
     @Override
     public Message process(Message message) {
         boolean even = oddSecondProvider.getSecond() % 2 == 0;

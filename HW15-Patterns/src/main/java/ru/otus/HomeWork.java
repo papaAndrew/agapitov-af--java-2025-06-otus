@@ -1,5 +1,6 @@
 package ru.otus;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -33,7 +34,8 @@ public class HomeWork {
           по аналогии с Demo.class
           из элеменов "to do" создать new ComplexProcessor и обработать сообщение
         */
-        List<Processor> processors = List.of(new SwapFieldsProcessor(), new OddTimeProcessor());
+        List<Processor> processors = List.of(new SwapFieldsProcessor(), new OddTimeProcessor(() -> LocalDateTime.now()
+                .getSecond()));
 
         var complexProcessor = new ComplexProcessor(processors, ex -> {});
         var historyListener = new HistoryListener();

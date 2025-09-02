@@ -1,7 +1,6 @@
 package ru.otus.model;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 @SuppressWarnings({"java:S107", "java:S1135"})
 public class Message {

@@ -18,10 +18,11 @@ public class OddTimeProcessorTest {
         for (int i = 0; i < attempts; i++) {
             boolean odd = OddTimeProcessorTest.getSecond() % 2 != 0;
             if (odd) {
-                assertThatNoException()
-                        .isThrownBy(() -> new OddTimeProcessor(OddTimeProcessorTest::getSecond).process(new Message.Builder(0).build()));
+                assertThatNoException().isThrownBy(() -> new OddTimeProcessor(OddTimeProcessorTest::getSecond)
+                        .process(new Message.Builder(0).build()));
             } else {
-                assertThatException().isThrownBy(() -> new OddTimeProcessor(OddTimeProcessorTest::getSecond).process(new Message.Builder(0).build()));
+                assertThatException().isThrownBy(() -> new OddTimeProcessor(OddTimeProcessorTest::getSecond)
+                        .process(new Message.Builder(0).build()));
             }
 
             try {
@@ -36,4 +37,3 @@ public class OddTimeProcessorTest {
         return LocalDateTime.now().getSecond();
     }
 }
-
