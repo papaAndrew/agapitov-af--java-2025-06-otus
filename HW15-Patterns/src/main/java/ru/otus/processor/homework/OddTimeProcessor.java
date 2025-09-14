@@ -6,9 +6,9 @@ import ru.otus.processor.Processor;
 
 public class OddTimeProcessor implements Processor {
 
-    private final OddSecondProvider oddSecondProvider;
+    private final TimeSecondProvider oddSecondProvider;
 
-    public OddTimeProcessor(OddSecondProvider oddSecondProvider) {
+    public OddTimeProcessor(TimeSecondProvider oddSecondProvider) {
         this.oddSecondProvider = oddSecondProvider;
     }
 

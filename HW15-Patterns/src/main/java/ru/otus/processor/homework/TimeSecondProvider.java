@@ -1,5 +1,5 @@
 package ru.otus.processor.homework;
 
-public interface OddSecondProvider {
+public interface TimeSecondProvider {
     long getSecond();
 }
