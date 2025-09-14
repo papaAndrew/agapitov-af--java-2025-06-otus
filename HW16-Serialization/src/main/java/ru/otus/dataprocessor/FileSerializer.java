@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -32,6 +31,6 @@ public class FileSerializer implements Serializer {
     }
 
     private Path getPath() {
-        return Path.of(URI.create(fileName));
+        return Path.of(fileName);
     }
 }
