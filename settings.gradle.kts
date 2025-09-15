@@ -29,3 +29,6 @@ include("HW08-GC")
 include("HW10-ByteCode")
 include("HW12-Solid")
 include("HW15-Patterns")
+include("HW16-Serialization")
+include("HW18-JDBC")
+
