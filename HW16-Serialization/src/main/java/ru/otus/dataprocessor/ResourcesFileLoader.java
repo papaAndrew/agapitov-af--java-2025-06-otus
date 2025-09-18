@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,22 +29,20 @@ public class ResourcesFileLoader implements Loader {
     public List<Measurement> load() {
         // читает файл, парсит и возвращает результат
         try {
-            return mapper.readValue(getFile(), new TypeReference<>() {});
+            return mapper.readValue(getContent(), new TypeReference<>() {});
         } catch (IOException e) {
             throw new FileProcessException(e);
         }
     }
 
-    private File getFile() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(fileName);
-        if (resource == null) {
-            throw new FileProcessException("file not found! " + fileName);
+    private String getContent() throws IOException {
+        ClassLoader classLoader = ResourcesFileLoader.class.getClassLoader();
+
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+        if (inputStream == null) {
+            throw new FileProcessException("File not found in resources: " + fileName);
         }
-        try {
-            return new File(resource.toURI());
-        } catch (URISyntaxException e) {
-            throw new FileProcessException(e);
-        }
+        byte[] bytes = inputStream.readAllBytes();
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }
