@@ -8,7 +8,6 @@ public class TestResults {
 
     private Integer passed = 0;
 
-
     public Integer getTotal() {
         return total;
     }
@@ -16,7 +15,6 @@ public class TestResults {
     public void setTotal(Integer total) {
         this.total = total;
     }
-
 
     public Integer getPassed() {
         return passed;
@@ -46,5 +44,4 @@ public class TestResults {
         testResults.setTotal(total);
         return testResults;
     }
-
 }
