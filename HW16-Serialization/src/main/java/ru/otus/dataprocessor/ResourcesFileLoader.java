@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.slf4j.Logger;
@@ -35,14 +33,14 @@ public class ResourcesFileLoader implements Loader {
         }
     }
 
-    private String getContent() throws IOException {
+    private String getContent() {
         ClassLoader classLoader = ResourcesFileLoader.class.getClassLoader();
 
-        InputStream inputStream = classLoader.getResourceAsStream(fileName);
-        if (inputStream == null) {
-            throw new FileProcessException("File not found in resources: " + fileName);
+        try (InputStream inputStream = classLoader.getResourceAsStream(fileName)) {
+            byte[] bytes = inputStream.readAllBytes();
+            return new String(bytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new FileProcessException("Resource unavailable  " + fileName);
         }
-        byte[] bytes = inputStream.readAllBytes();
-        return new String(bytes, StandardCharsets.UTF_8);
     }
 }
