@@ -15,6 +15,14 @@ import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import ru.otus.core.repository.executor.DbExecutorImpl;
+import ru.otus.core.sessionmanager.TransactionRunnerJdbc;
+import ru.otus.crm.datasource.DriverManagerDataSource;
+import ru.otus.crm.model.Client;
+import ru.otus.crm.service.DbServiceClientImpl;
+import ru.otus.jdbc.mapper.DataTemplateJdbc;
+import ru.otus.jdbc.mapper.EntityClassMetaData;
+import ru.otus.jdbc.mapper.EntitySQLMetaData;
 
 @DisplayName("Сравниваем скорость работы с connectionPool и без него ")
 @Testcontainers
@@ -35,26 +43,30 @@ class HomeWorkTest {
     //            .withClasspathResourceMapping(
     //                    "01_insertData.sql", "/docker-entrypoint-initdb.d/01_insertData.sql", BindMode.READ_ONLY);
 
+    private final DriverManagerDataSource dataSource = new DriverManagerDataSource(
+            postgresqlContainer.getJdbcUrl(), postgresqlContainer.getUsername(), postgresqlContainer.getPassword());
+
+    private final TransactionRunnerJdbc transactionRunner = new TransactionRunnerJdbc(dataSource);
+
     @DisplayName(" выполняем sql-запрос")
     @ParameterizedTest(name = " с использованием connection Pool: {0}")
     @ValueSource(booleans = {false, true})
     void doSelect(boolean usePool) throws SQLException {
-        if (usePool) {
-            makeConnectionPool();
-        }
+        var dbExecutor = new DbExecutorImpl();
 
-        logger.info("before getting connection");
-        long before = System.currentTimeMillis();
+        EntityClassMetaData<Client> entityClassMetaDataClient; // = new EntityClassMetaDataImpl();
+        EntitySQLMetaData entitySQLMetaDataClient = null; // = new EntitySQLMetaDataImpl(entityClassMetaDataClient);
+        var dataTemplateClient = new DataTemplateJdbc<Client>(
+                dbExecutor, entitySQLMetaDataClient); // реализация DataTemplate, универсальная
 
-        try (Connection connection = getConnection(usePool)) {
-            logger.info("connection.isValid:{}", connection.isValid(100));
-        }
+        var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
+        dbServiceClient.saveClient(new Client("dbServiceFirst"));
 
-        logger.info("usePool: {}, after getting connection, time:{}", usePool, (System.currentTimeMillis() - before));
-
-        if (usePool) {
-            dataSourcePool.close();
-        }
+        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
+        var clientSecondSelected = dbServiceClient
+                .getClient(clientSecond.getId())
+                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
+        logger.info("clientSecondSelected:{}", clientSecondSelected);
     }
 
     private Properties getConnectionProperties() {
