@@ -37,7 +37,6 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         return fieldWithId;
     }
 
-
     @Override
     public List<Field> getAllFields() {
         return new ArrayList<>(allFields);
@@ -47,7 +46,6 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     public List<Field> getFieldsWithoutId() {
         return new ArrayList<>(fieldsWithoutId);
     }
-
 
     private Constructor<T> getDefaultConstructor(Class<T> clazz) {
         try {
@@ -76,9 +74,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     }
 
     private Field findFieldWithId(List<Field> fields) {
-        var fieldsWithId = fields.stream()
-                .filter(this::isFieldIdAnnotated)
-                .toList();
+        var fieldsWithId = fields.stream().filter(this::isFieldIdAnnotated).toList();
         if (fieldsWithId.size() == 1) {
             return fieldsWithId.getFirst();
         }
@@ -86,15 +82,12 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     }
 
     private List<Field> filterFieldsWithoutId(List<Field> fields) {
-        return fields.stream()
-                .filter(field -> !isFieldIdAnnotated(field))
-                .toList();
+        return fields.stream().filter(field -> !isFieldIdAnnotated(field)).toList();
     }
 
     private boolean isFieldIdAnnotated(Field field) {
         return Arrays.stream(field.getAnnotations())
-                .anyMatch(annotation ->annotation.annotationType().getSimpleName().equals("Id"));
+                .anyMatch(annotation ->
+                        annotation.annotationType().getSimpleName().equals("Id"));
     }
-
-
 }

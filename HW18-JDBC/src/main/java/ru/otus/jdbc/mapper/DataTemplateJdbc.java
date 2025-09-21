@@ -1,10 +1,17 @@
 package ru.otus.jdbc.mapper;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+
+import org.flywaydb.core.internal.jdbc.RowMapper;
 import ru.otus.core.repository.DataTemplate;
+import ru.otus.core.repository.DataTemplateException;
 import ru.otus.core.repository.executor.DbExecutor;
+import ru.otus.crm.model.Client;
 
 /** Сохратяет объект в базу, читает объект из базы */
 @SuppressWarnings("java:S1068")
@@ -35,6 +42,12 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     @Override
     public void update(Connection connection, T client) {
-        throw new UnsupportedOperationException();
+        try {
+            dbExecutor.executeStatement(
+                    connection, "update client set name = ? where id = ?", List.of(client.getName(), client.getId()));
+        } catch (Exception e) {
+            throw new DataTemplateException(e);
+        }
+
     }
 }
