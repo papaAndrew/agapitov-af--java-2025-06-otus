@@ -22,13 +22,13 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
     @Override
     public String getInsertSql() {
-        return "INSERT INTO " + entityClassMetaData.getName() + " (" + getAllFieldNames() + ") VALUES ("
-                + getAllFieldValues() + ")";
+        return "INSERT INTO " + entityClassMetaData.getName() + " (" + getUpdatableFieldNames(",") + ") VALUES ("
+                + getUpdatableFieldValues() + ")";
     }
 
     @Override
     public String getUpdateSql() {
-        return "UPDATE " + entityClassMetaData.getName() + " SET " + getUpdatableFieldNames() + "=? WHERE "
+        return "UPDATE " + entityClassMetaData.getName() + " SET " + getUpdatableFieldNames("=?,") + "=? WHERE "
                 + entityClassMetaData.getIdField().getName() + "=?";
     }
 
@@ -41,18 +41,20 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
                         .toArray(String[]::new));
     }
 
-    private String getUpdatableFieldNames() {
+    private String getUpdatableFieldNames(String delimiter) {
         return String.join(
-                "=?,",
+                delimiter,
                 entityClassMetaData.getFieldsWithoutId().stream()
                         .map(Field::getName)
                         .sorted()
                         .toArray(String[]::new));
     }
 
-    private String getAllFieldValues() {
+    private String getUpdatableFieldValues() {
         return String.join(
                 ",",
-                entityClassMetaData.getAllFields().stream().map(item -> "?").toArray(String[]::new));
+                entityClassMetaData.getFieldsWithoutId().stream()
+                        .map(item -> "?")
+                        .toArray(String[]::new));
     }
 }
