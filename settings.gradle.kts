@@ -31,4 +31,4 @@ include("HW12-Solid")
 include("HW15-Patterns")
 include("HW16-Serialization")
 include("HW18-JDBC")
-
+include("HW21-JPQL")
