@@ -69,10 +69,11 @@ public class Client implements Cloneable {
 
     @Override
     public String toString() {
-        return "Client{" + "id=" + id
-                + ", name='" + name
-                + ", address ='" + address.getStreet()
-                + ", phones = [" + String.join(", ", phones.stream().map(Phone::getNumber).toList()) + "]"
-                + '\'' + '}';
+        var delim = "," + '\n';
+        return "Client{id='" + id + '\'' + delim
+                + "    name='" + name + '\'' + delim
+                + "    address='" + address.getStreet()+ '\'' + delim
+                + "    phones=[" + String.join(", ", phones.stream().map(Phone::getNumber).toList()) + "]" + delim
+                + '}';
     }
 }
