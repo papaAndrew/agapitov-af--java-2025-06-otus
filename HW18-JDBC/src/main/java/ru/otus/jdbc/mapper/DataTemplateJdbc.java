@@ -60,17 +60,17 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     }
 
     @Override
-    public long insert(Connection connection, T client) {
+    public long insert(Connection connection, T entity) {
         try {
             var generatedId = dbExecutor.executeStatement(
-                    connection, entitySQLMetaData.getInsertSql(), getInsertFieldValues(client, entityType));
+                    connection, entitySQLMetaData.getInsertSql(), getInsertFieldValues(entity, entityType));
 
             var idField = Arrays.stream(entityType.getDeclaredFields())
                     .filter(field -> field.getAnnotation(Id.class) != null)
                     .findFirst();
             if (idField.isPresent() && idField.get().getType() == Long.class) {
                 idField.get().setAccessible(true);
-                idField.get().set(client, generatedId);
+                idField.get().set(entity, generatedId);
             }
             return generatedId;
         } catch (Exception e) {
@@ -139,10 +139,10 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
             T instance = entityType.getDeclaredConstructor().newInstance();
             var metaData = rs.getMetaData();
             for (int i = 0; i < metaData.getColumnCount(); i++) {
-                var name = metaData.getColumnName(i);
+                var name = metaData.getColumnName(i + 1);
                 var field = entityType.getDeclaredField(name);
                 field.setAccessible(true);
-                field.set(instance, rs.getObject(i));
+                field.set(instance, rs.getObject(i + 1));
             }
             return instance;
         } catch (InstantiationException

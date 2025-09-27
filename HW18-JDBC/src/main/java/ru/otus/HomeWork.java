@@ -8,7 +8,9 @@ import ru.otus.core.repository.executor.DbExecutorImpl;
 import ru.otus.core.sessionmanager.TransactionRunnerJdbc;
 import ru.otus.crm.datasource.DriverManagerDataSource;
 import ru.otus.crm.model.Client;
+import ru.otus.crm.model.Manager;
 import ru.otus.crm.service.DbServiceClientImpl;
+import ru.otus.crm.service.DbServiceManagerImpl;
 import ru.otus.jdbc.mapper.*;
 
 @SuppressWarnings({"java:S125", "java:S1481"})
@@ -44,19 +46,18 @@ public class HomeWork {
 
         // Сделайте тоже самое с классом Manager (для него надо сделать свою таблицу)
 
-        //        EntityClassMetaData<Manager> entityClassMetaDataManager = new
-        // EntityClassMetaDataImpl<>(Manager.class);
-        //        EntitySQLMetaData entitySQLMetaDataManager = new EntitySQLMetaDataImpl(entityClassMetaDataManager);
-        //        var dataTemplateManager = new DataTemplateJdbc<>(dbExecutor, entitySQLMetaDataManager, Manager.class);
-        //
-        //        var dbServiceManager = new DbServiceManagerImpl(transactionRunner, dataTemplateManager);
-        //        dbServiceManager.saveManager(new Manager("ManagerFirst"));
-        //
-        //        var managerSecond = dbServiceManager.saveManager(new Manager("ManagerSecond"));
-        //        var managerSecondSelected = dbServiceManager
-        //                .getManager(managerSecond.getNo())
-        //                .orElseThrow(() -> new RuntimeException("Manager not found, id:" + managerSecond.getNo()));
-        //        log.info("managerSecondSelected:{}", managerSecondSelected);
+        EntityClassMetaData<Manager> entityClassMetaDataManager = new EntityClassMetaDataImpl<>(Manager.class);
+        EntitySQLMetaData entitySQLMetaDataManager = new EntitySQLMetaDataImpl(entityClassMetaDataManager);
+        var dataTemplateManager = new DataTemplateJdbc<>(dbExecutor, entitySQLMetaDataManager, Manager.class);
+
+        var dbServiceManager = new DbServiceManagerImpl(transactionRunner, dataTemplateManager);
+        dbServiceManager.saveManager(new Manager("ManagerFirst"));
+
+        var managerSecond = dbServiceManager.saveManager(new Manager("ManagerSecond"));
+        var managerSecondSelected = dbServiceManager
+                .getManager(managerSecond.getNo())
+                .orElseThrow(() -> new RuntimeException("Manager not found, id:" + managerSecond.getNo()));
+        log.info("managerSecondSelected:{}", managerSecondSelected);
     }
 
     private static void flywayMigrations(DataSource dataSource) {
