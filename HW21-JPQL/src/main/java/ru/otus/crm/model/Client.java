@@ -60,7 +60,9 @@ public class Client implements Cloneable {
 
     public void setPhones(List<Phone> phones) {
         this.phones = phones;
-        phones.forEach(phone -> phone.setClient(this));
+        if (this.phones != null) {
+            phones.forEach(phone -> phone.setClient(this));
+        }
     }
 
     @Override
@@ -71,16 +73,22 @@ public class Client implements Cloneable {
             return new Client(this.id, this.name, this.address, phones);
         }
         return new Client(this.id, this.name, this.address, null);
+        //        return new Client(null, this.name, null, null);
     }
 
     @Override
     public String toString() {
         var delim = "," + '\n';
-        return "Client{id='" + id + '\'' + delim
-                + "    name='" + name + '\'' + delim
-                + "    address='" + address.getStreet() + '\'' + delim
-                + "    phones=["
-                + String.join(", ", phones.stream().map(Phone::getNumber).toList()) + "]" + delim
+        return "Client{id='" + id + '\'' + delim + "    name='" + name + '\'' + delim
+                + "    address=" + (address == null ? "null" : '\'' + address.getStreet() + '\'') + delim
+                + "    phones="
+                + (phones == null
+                        ? "null"
+                        : ("["
+                                + String.join(
+                                        ", ",
+                                        phones.stream().map(Phone::getNumber).toList()) + "]"))
+                + delim
                 + '}';
     }
 }

@@ -31,12 +31,12 @@ public class Phone {
         this.number = number;
     }
 
-    @Override
-    public String toString() {
-        var delim = "," + '\n';
-        return "Phone{id='" + id + '\'' + delim
-                + "    number='" + number + '\'' + delim
-                + "    client= " + client + delim
-                + '}';
-    }
+    //    @Override
+    //    public String toString() {
+    //        var delim = "," + '\n';
+    //        return "Phone{id='" + id + '\'' + delim + "    number='" + number + '\'' + delim + "    client= " + client
+    //                        == null
+    //                ? "null"
+    //                : client.getId() + delim + '}';
+    //    }
 }
