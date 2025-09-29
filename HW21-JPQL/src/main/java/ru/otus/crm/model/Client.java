@@ -1,7 +1,6 @@
 package ru.otus.crm.model;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -65,21 +64,22 @@ public class Client implements Cloneable {
         }
     }
 
+    //    @SuppressWarnings({"java:S2975", "java:S1182"})
     @Override
-    @SuppressWarnings({"java:S2975", "java:S1182"})
     public Client clone() {
+        var clonedAddress = (Address) this.address.clone();
         if (this.phones != null) {
-            var phones = new ArrayList<>(this.phones);
-            return new Client(this.id, this.name, this.address, phones);
+            var clonedPhones =
+                    this.phones.stream().map(phone -> (Phone) phone.clone()).toList();
+            return new Client(this.id, this.name, clonedAddress, clonedPhones);
         }
-        return new Client(this.id, this.name, this.address, null);
-        //        return new Client(null, this.name, null, null);
+        return new Client(this.id, this.name, clonedAddress, null);
     }
 
     @Override
     public String toString() {
         var delim = "," + '\n';
-        return "Client{id='" + id + '\'' + delim + "    name='" + name + '\'' + delim
+        return "Client{id=" + id + delim + "    name='" + name + '\'' + delim
                 + "    address=" + (address == null ? "null" : '\'' + address.getStreet() + '\'') + delim
                 + "    phones="
                 + (phones == null

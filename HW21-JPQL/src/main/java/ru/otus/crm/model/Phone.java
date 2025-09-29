@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "phone")
-public class Phone {
+public class Phone implements Cloneable {
 
     @Id
     @SequenceGenerator(name = "phone_gen", sequenceName = "phone_SEQ", initialValue = 1, allocationSize = 1)
@@ -31,12 +31,8 @@ public class Phone {
         this.number = number;
     }
 
-    //    @Override
-    //    public String toString() {
-    //        var delim = "," + '\n';
-    //        return "Phone{id='" + id + '\'' + delim + "    number='" + number + '\'' + delim + "    client= " + client
-    //                        == null
-    //                ? "null"
-    //                : client.getId() + delim + '}';
-    //    }
+    @Override
+    protected Object clone() {
+        return new Phone(id, number);
+    }
 }
