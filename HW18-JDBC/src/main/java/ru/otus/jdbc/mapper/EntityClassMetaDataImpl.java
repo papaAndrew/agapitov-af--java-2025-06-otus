@@ -8,14 +8,14 @@ import java.util.List;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
-    private final Class<T> entityClass;
+    private final String name;
     private final Constructor<T> constructor;
     private final List<Field> allFields;
     private final List<Field> fieldsWithoutId;
     private final Field fieldWithId;
 
     public EntityClassMetaDataImpl(Class<T> entityClass) {
-        this.entityClass = entityClass;
+        this.name = entityClass.getSimpleName().toLowerCase();
         this.constructor = getDefaultConstructor(entityClass);
         this.allFields = getAllDeclaredFields(entityClass);
         this.fieldsWithoutId = filterFieldsWithoutId(allFields);
@@ -24,7 +24,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public String getName() {
-        return entityClass.getSimpleName().toLowerCase();
+        return name;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         if (fieldsWithId.size() == 1) {
             return fieldsWithId.getFirst();
         }
-        throw new IllegalStateException("Class " + entityClass.getName() + " must have exactly one @Id field");
+        throw new IllegalStateException("Class " + name + " must have exactly one @Id field");
     }
 
     private List<Field> filterFieldsWithoutId(List<Field> fields) {

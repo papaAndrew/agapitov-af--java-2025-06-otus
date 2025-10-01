@@ -56,7 +56,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                         throw new DataTemplateException(e);
                     }
                 })
-                .orElseThrow(() -> new RuntimeException("Unexpected error"));
+                .orElseThrow(() -> new DataTemplateException("Unexpected error"));
     }
 
     @Override
@@ -89,10 +89,8 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     }
 
     private static <T> List<Object> getFieldValuesForUpdate(T client, Class<T> entityType) {
-        var sortedNames = Arrays.stream(entityType.getDeclaredFields())
-                .map(Field::getName)
-                .sorted()
-                .toArray(String[]::new);
+        var sortedNames = new EntityClassMetaDataImpl<>(entityType)
+                .getAllFields().stream().map(Field::getName).sorted().toArray(String[]::new);
 
         Object id = null;
         List<Object> fieldValues = new ArrayList<>();
@@ -111,27 +109,27 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         if (id != null) {
             fieldValues.add(id);
         } else {
-            throw new RuntimeException(
+            throw new DataTemplateException(
                     "No id field in " + entityType.getName() + " for update. Add @Id annotation to id field");
         }
         return fieldValues;
     }
 
     private static <T> List<Object> getInsertFieldValues(T client, Class<T> entityType) {
-        return Arrays.stream(entityType.getDeclaredFields())
-                .filter(field -> field.getAnnotation(Id.class) == null)
-                .map(Field::getName)
-                .sorted()
-                .map(fieldName -> {
-                    try {
-                        var field = entityType.getDeclaredField(fieldName);
-                        field.setAccessible(true);
-                        return field.get(client);
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        throw new DataTemplateException(e);
-                    }
-                })
-                .collect(Collectors.toList());
+        return new EntityClassMetaDataImpl<>(entityType)
+                .getFieldsWithoutId().stream()
+                        .map(Field::getName)
+                        .sorted()
+                        .map(fieldName -> {
+                            try {
+                                var field = entityType.getDeclaredField(fieldName);
+                                field.setAccessible(true);
+                                return field.get(client);
+                            } catch (NoSuchFieldException | IllegalAccessException e) {
+                                throw new DataTemplateException(e);
+                            }
+                        })
+                        .collect(Collectors.toList());
     }
 
     private static <T> T createEntityFromResult(ResultSet rs, Class<T> entityType) {

@@ -5,31 +5,41 @@ import java.lang.reflect.Field;
 public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
     private final EntityClassMetaData<?> entityClassMetaData;
+    private final String sqlSelectAll;
+    private final String sqlSelectById;
+    private final String sqlInsert;
+    private final String sqlUpdate;
 
     public EntitySQLMetaDataImpl(EntityClassMetaData<?> entityClassMetaData) {
         this.entityClassMetaData = entityClassMetaData;
+
+        this.sqlSelectAll = "SELECT " + getAllFieldNames() + " FROM " + entityClassMetaData.getName();
+        this.sqlSelectById =
+                getSelectAllSql() + " WHERE " + entityClassMetaData.getIdField().getName() + "=?";
+        this.sqlInsert = "INSERT INTO " + entityClassMetaData.getName() + " (" + getUpdatableFieldNames(",")
+                + ") VALUES (" + getUpdatableFieldValues() + ")";
+        this.sqlUpdate = "UPDATE " + entityClassMetaData.getName() + " SET " + getUpdatableFieldNames("=?,")
+                + "=? WHERE " + entityClassMetaData.getIdField().getName() + "=?";
     }
 
     @Override
     public String getSelectAllSql() {
-        return "SELECT " + getAllFieldNames() + " FROM " + entityClassMetaData.getName();
+        return sqlSelectAll;
     }
 
     @Override
     public String getSelectByIdSql() {
-        return getSelectAllSql() + " WHERE " + entityClassMetaData.getIdField().getName() + "=?";
+        return sqlSelectById;
     }
 
     @Override
     public String getInsertSql() {
-        return "INSERT INTO " + entityClassMetaData.getName() + " (" + getUpdatableFieldNames(",") + ") VALUES ("
-                + getUpdatableFieldValues() + ")";
+        return sqlInsert;
     }
 
     @Override
     public String getUpdateSql() {
-        return "UPDATE " + entityClassMetaData.getName() + " SET " + getUpdatableFieldNames("=?,") + "=? WHERE "
-                + entityClassMetaData.getIdField().getName() + "=?";
+        return sqlUpdate;
     }
 
     private String getAllFieldNames() {
