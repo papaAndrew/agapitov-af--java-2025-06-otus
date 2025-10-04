@@ -22,10 +22,28 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     private final EntitySQLMetaData entitySQLMetaData;
     private final Class<T> entityType;
 
-    public DataTemplateJdbc(DbExecutor dbExecutor, EntitySQLMetaData entitySQLMetaData, Class<T> entityType) {
+    final String[] allSortedNames;
+    final String[] nonIdSortedNames;
+    final String idFieldName;
+
+    public DataTemplateJdbc(
+            DbExecutor dbExecutor,
+            EntitySQLMetaData entitySQLMetaData,
+            EntityClassMetaData<T> entityClassMetaData,
+            Class<T> entityType) {
         this.dbExecutor = dbExecutor;
         this.entitySQLMetaData = entitySQLMetaData;
         this.entityType = entityType;
+
+        this.allSortedNames = entityClassMetaData.getAllFields().stream()
+                .map(Field::getName)
+                .sorted()
+                .toArray(String[]::new);
+        this.nonIdSortedNames = entityClassMetaData.getFieldsWithoutId().stream()
+                .map(Field::getName)
+                .sorted()
+                .toArray(String[]::new);
+        this.idFieldName = entityClassMetaData.getIdField().getName();
     }
 
     @Override
@@ -63,7 +81,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     public long insert(Connection connection, T entity) {
         try {
             var generatedId = dbExecutor.executeStatement(
-                    connection, entitySQLMetaData.getInsertSql(), getInsertFieldValues(entity, entityType));
+                    connection, entitySQLMetaData.getInsertSql(), getInsertFieldValues(entity));
 
             var idField = Arrays.stream(entityType.getDeclaredFields())
                     .filter(field -> field.getAnnotation(Id.class) != null)
@@ -82,54 +100,42 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     public void update(Connection connection, T client) {
         try {
             dbExecutor.executeStatement(
-                    connection, entitySQLMetaData.getSelectByIdSql(), getFieldValuesForUpdate(client, entityType));
+                    connection, entitySQLMetaData.getSelectByIdSql(), getFieldValuesForUpdate(client));
         } catch (Exception e) {
             throw new DataTemplateException(e);
         }
     }
 
-    private static <T> List<Object> getFieldValuesForUpdate(T client, Class<T> entityType) {
-        var sortedNames = new EntityClassMetaDataImpl<>(entityType)
-                .getAllFields().stream().map(Field::getName).sorted().toArray(String[]::new);
-
-        Object id = null;
-        List<Object> fieldValues = new ArrayList<>();
-        for (var fieldName : sortedNames) {
-            try {
-                var field = entityType.getDeclaredField(fieldName);
-                if (field.getAnnotation(Id.class) == null) {
-                    fieldValues.add(field.get(client));
-                } else {
-                    id = field.get(client);
-                }
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new DataTemplateException(e);
-            }
+    private List<Object> getFieldValuesForUpdate(T client) {
+        try {
+            List<Object> fieldValues = new ArrayList<>(Arrays.stream(nonIdSortedNames)
+                    .map(fieldName -> {
+                        try {
+                            return entityType.getDeclaredField(fieldName).get(client);
+                        } catch (IllegalAccessException | NoSuchFieldException e) {
+                            throw new DataTemplateException(e);
+                        }
+                    })
+                    .toList());
+            fieldValues.add(entityType.getDeclaredField(idFieldName));
+            return fieldValues;
+        } catch (NoSuchFieldException e) {
+            throw new DataTemplateException(e);
         }
-        if (id != null) {
-            fieldValues.add(id);
-        } else {
-            throw new DataTemplateException(
-                    "No id field in " + entityType.getName() + " for update. Add @Id annotation to id field");
-        }
-        return fieldValues;
     }
 
-    private static <T> List<Object> getInsertFieldValues(T client, Class<T> entityType) {
-        return new EntityClassMetaDataImpl<>(entityType)
-                .getFieldsWithoutId().stream()
-                        .map(Field::getName)
-                        .sorted()
-                        .map(fieldName -> {
-                            try {
-                                var field = entityType.getDeclaredField(fieldName);
-                                field.setAccessible(true);
-                                return field.get(client);
-                            } catch (NoSuchFieldException | IllegalAccessException e) {
-                                throw new DataTemplateException(e);
-                            }
-                        })
-                        .collect(Collectors.toList());
+    private List<Object> getInsertFieldValues(T client) {
+        return Arrays.stream(nonIdSortedNames)
+                .map(fieldName -> {
+                    try {
+                        var field = entityType.getDeclaredField(fieldName);
+                        field.setAccessible(true);
+                        return field.get(client);
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        throw new DataTemplateException(e);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     private static <T> T createEntityFromResult(ResultSet rs, Class<T> entityType) {
