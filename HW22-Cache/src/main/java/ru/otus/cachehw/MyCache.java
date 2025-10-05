@@ -7,25 +7,27 @@ import java.util.WeakHashMap;
 
 public class MyCache<K, V> implements HwCache<K, V> {
 
-    private final Map<K, V> cache = new WeakHashMap<>();
+    private final Map<String, V> cache = new WeakHashMap<>();
     private final List<HwListener<K, V>> listeners = new ArrayList<>();
 
     @Override
     public void put(K key, V value) {
         notify("put", key, value);
-        cache.put(key, value);
+        cache.put(getRealKey(key), value);
     }
 
     @Override
     public void remove(K key) {
-        notify("remove", key, cache.get(key));
-        cache.remove(key);
+        var value = getValue(key);
+        notify("remove", key, value);
+        cache.remove(getRealKey(key));
     }
 
     @Override
     public V get(K key) {
-        notify("get", key, cache.get(key));
-        return cache.get(key);
+        var value = getValue(key);
+        notify("get", key, value);
+        return value;
     }
 
     @Override
@@ -42,5 +44,13 @@ public class MyCache<K, V> implements HwCache<K, V> {
         for (var listener : listeners) {
             listener.notify(key, value, action);
         }
+    }
+
+    private String getRealKey(K key) {
+        return String.valueOf(key);
+    }
+
+    private V getValue(K key) {
+        return cache.get(getRealKey(key));
     }
 }
