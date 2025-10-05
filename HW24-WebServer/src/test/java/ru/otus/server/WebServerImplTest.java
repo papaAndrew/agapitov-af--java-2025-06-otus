@@ -22,7 +22,7 @@ import ru.otus.model.User;
 import ru.otus.services.TemplateProcessor;
 
 @DisplayName("Тест сервера должен ")
-class UsersWebServerImplTest {
+class WebServerImplTest {
 
     private static final int WEB_SERVER_PORT = 8989;
     private static final String WEB_SERVER_URL = "http://localhost:" + WEB_SERVER_PORT + "/";
@@ -33,7 +33,7 @@ class UsersWebServerImplTest {
     private static final User DEFAULT_USER = new User(DEFAULT_USER_ID, "Vasya", "user1", "11111");
 
     private static Gson gson;
-    private static UsersWebServer webServer;
+    private static WebServer webServer;
     private static HttpClient http;
 
     @BeforeAll
@@ -46,7 +46,7 @@ class UsersWebServerImplTest {
         given(userDao.findById(DEFAULT_USER_ID)).willReturn(Optional.of(DEFAULT_USER));
 
         gson = new GsonBuilder().serializeNulls().create();
-        webServer = new UsersWebServerSimple(WEB_SERVER_PORT, userDao, gson, templateProcessor);
+        //        webServer = new WebServerSimple(WEB_SERVER_PORT, userDao, gson, templateProcessor);
         webServer.start();
     }
 
