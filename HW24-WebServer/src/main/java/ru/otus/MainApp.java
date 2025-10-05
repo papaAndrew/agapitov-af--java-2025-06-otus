@@ -1,13 +1,9 @@
 package ru.otus;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.util.List;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.dao.InMemoryUserDao;
-import ru.otus.dao.UserDao;
 import ru.otus.helpers.MigrationsExecutorFlyway;
 import ru.otus.hibernate.repository.DataTemplateHibernate;
 import ru.otus.hibernate.repository.HibernateUtils;
@@ -15,8 +11,8 @@ import ru.otus.hibernate.sessionmanager.TransactionManagerHibernate;
 import ru.otus.model.Address;
 import ru.otus.model.Client;
 import ru.otus.model.Phone;
+import ru.otus.server.SecuredWebServer;
 import ru.otus.server.WebServer;
-import ru.otus.server.WebServerSimple;
 import ru.otus.services.*;
 
 public class MainApp {
@@ -32,27 +28,22 @@ public class MainApp {
         var dbUrl = configuration.getProperty("hibernate.connection.url");
         var dbUserName = configuration.getProperty("hibernate.connection.username");
         var dbPassword = configuration.getProperty("hibernate.connection.password");
-
         new MigrationsExecutorFlyway(dbUrl, dbUserName, dbPassword).executeMigrations();
 
-        var sessionFactory =
-                HibernateUtils.buildSessionFactory(configuration, Client.class, Address.class, Phone.class);
-
-        var transactionManager = new TransactionManagerHibernate(sessionFactory);
-        var clientTemplate = new DataTemplateHibernate<>(Client.class);
-        var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate);
+        var dbServiceClient = new DbServiceClientImpl(
+                new TransactionManagerHibernate(
+                        HibernateUtils.buildSessionFactory(configuration, Client.class, Address.class, Phone.class)),
+                new DataTemplateHibernate<>(Client.class));
         addDefaultData(dbServiceClient);
 
         serverStart(dbServiceClient);
     }
 
     private static void serverStart(DBServiceClient dbServiceClient) throws Exception {
-        UserDao userDao = new InMemoryUserDao();
-        Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
         TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
-        UserAuthService authService = new UserAuthServiceImpl(userDao);
+        UserAuthService authService = new UserAuthServiceImpl();
 
-        WebServer webServer = new WebServerSimple(WEB_SERVER_PORT, dbServiceClient, gson, templateProcessor);
+        WebServer webServer = new SecuredWebServer(WEB_SERVER_PORT, authService, dbServiceClient, templateProcessor);
 
         webServer.start();
         webServer.join();

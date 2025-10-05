@@ -12,8 +12,7 @@ import ru.otus.services.TemplateProcessor;
 @SuppressWarnings({"java:S1989"})
 public class UsersServlet extends HttpServlet {
 
-    private static final String USERS_PAGE_TEMPLATE = "clients.html";
-    private static final String TEMPLATE_ATTR_RANDOM_USER = "randomUser";
+    private static final String USERS_PAGE_TEMPLATE = "user.html";
 
     private final transient UserDao userDao;
     private final transient TemplateProcessor templateProcessor;
@@ -26,7 +25,6 @@ public class UsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         Map<String, Object> paramsMap = new HashMap<>();
-        userDao.findRandomUser().ifPresent(randomUser -> paramsMap.put(TEMPLATE_ATTR_RANDOM_USER, randomUser));
 
         response.setContentType("text/html");
         response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, paramsMap));

@@ -1,6 +1,5 @@
 package ru.otus.server;
 
-import com.google.gson.Gson;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.server.Handler;
@@ -16,13 +15,11 @@ public class WebServerSimple implements WebServer {
     private static final String COMMON_RESOURCES_DIR = "static";
 
     private final DBServiceClient serviceClient;
-    private final Gson gson;
     protected final TemplateProcessor templateProcessor;
     private final Server server;
 
-    public WebServerSimple(int port, DBServiceClient serviceClient, Gson gson, TemplateProcessor templateProcessor) {
+    public WebServerSimple(int port, DBServiceClient serviceClient, TemplateProcessor templateProcessor) {
         this.serviceClient = serviceClient;
-        this.gson = gson;
         this.templateProcessor = templateProcessor;
         server = new Server(port);
     }
@@ -52,7 +49,7 @@ public class WebServerSimple implements WebServer {
 
         Handler.Sequence sequence = new Handler.Sequence();
         sequence.addHandler(resourceHandler);
-        sequence.addHandler(applySecurity(servletContextHandler, "/users", "/api/user/*"));
+        sequence.addHandler(applySecurity(servletContextHandler, "/user.html", "/clients", "/clients/*"));
 
         server.setHandler(sequence);
     }
@@ -75,8 +72,6 @@ public class WebServerSimple implements WebServer {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletContextHandler.addServlet(
                 new ServletHolder(new ClientsServlet(templateProcessor, serviceClient)), "/clients");
-        //        servletContextHandler.addServlet(new ServletHolder(new UsersApiServlet(userDao, gson)),
-        // "/api/user/*");
         return servletContextHandler;
     }
 }

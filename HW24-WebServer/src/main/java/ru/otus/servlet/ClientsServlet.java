@@ -12,7 +12,7 @@ import ru.otus.services.TemplateProcessor;
 @SuppressWarnings({"java:S1989"})
 public class ClientsServlet extends HttpServlet {
 
-    private static final String USERS_PAGE_TEMPLATE = "clients.html";
+    private static final String PAGE_CLIENT_LIST_TEMPLATE = "clients.html";
 
     private final transient DBServiceClient serviceClient;
     private final transient TemplateProcessor templateProcessor;
@@ -28,6 +28,6 @@ public class ClientsServlet extends HttpServlet {
         paramsMap.put("clients", serviceClient.findAll());
 
         response.setContentType("text/html");
-        response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, paramsMap));
+        response.getWriter().println(templateProcessor.getPage(PAGE_CLIENT_LIST_TEMPLATE, paramsMap));
     }
 }
