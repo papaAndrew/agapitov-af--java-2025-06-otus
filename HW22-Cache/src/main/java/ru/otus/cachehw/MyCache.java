@@ -1,12 +1,12 @@
 package ru.otus.cachehw;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MyCache<K, V> implements HwCache<K, V> {
 
+    private static final Logger log = LoggerFactory.getLogger(MyCache.class);
     private final Map<String, V> cache = new WeakHashMap<>();
     private final List<HwListener<K, V>> listeners = new ArrayList<>();
 
@@ -42,12 +42,27 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     private void notify(String action, K key, V value) {
         for (var listener : listeners) {
-            listener.notify(key, value, action);
+            try {
+                listener.notify(key, value, action);
+            } catch (Exception e) {
+                log.warn("Listener notification error `{}`", e.getMessage());
+            }
         }
     }
 
     private String getRealKey(K key) {
-        return String.valueOf(key);
+        try {
+            Objects.requireNonNull(key, "Key cannot be null");
+            var keyString = String.valueOf(key);
+            if (keyString.trim().isEmpty()) {
+                keyString = null;
+            }
+            Objects.requireNonNull(keyString, "Key cannot be null");
+            return keyString;
+        } catch (Exception e) {
+            log.error("Failed to convert key to string: {}", e.getMessage(), e);
+            throw new HwCacheException("Key cannot be converted to string", e);
+        }
     }
 
     private V getValue(K key) {
