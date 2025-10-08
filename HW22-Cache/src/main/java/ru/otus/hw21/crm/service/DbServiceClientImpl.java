@@ -14,12 +14,12 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     private final DataTemplate<Client> clientDataTemplate;
     private final TransactionManager transactionManager;
-    private final HwCache<Long, Client> cache;
+    private final HwCache<String, Client> cache;
 
     public DbServiceClientImpl(
             TransactionManager transactionManager,
             DataTemplate<Client> clientDataTemplate,
-            HwCache<Long, Client> cache) {
+            HwCache<String, Client> cache) {
         this.transactionManager = transactionManager;
         this.clientDataTemplate = clientDataTemplate;
         this.cache = cache;
@@ -33,20 +33,20 @@ public class DbServiceClientImpl implements DBServiceClient {
             if (client.getId() == null) {
                 var savedClient = clientDataTemplate.insert(session, clientCloned);
                 log.info("created client: {}", clientCloned);
-                cache.put(savedClient.getId(), savedClient);
+                cache.put(KeyOfClient(savedClient), savedClient);
                 return savedClient;
             }
             var savedClient = clientDataTemplate.update(session, clientCloned);
             log.info("updated client: {}", savedClient);
 
-            cache.put(savedClient.getId(), savedClient);
+            cache.put(KeyOfClient(savedClient), savedClient);
             return savedClient;
         });
     }
 
     @Override
     public Optional<Client> getClient(long id) {
-        var cachedClient = cache.get(id);
+        var cachedClient = cache.get(keyOfId(id));
         if (cachedClient != null) {
             log.info("Cached client: {}", cachedClient);
             return Optional.of(cachedClient);
@@ -54,7 +54,7 @@ public class DbServiceClientImpl implements DBServiceClient {
         return transactionManager.doInReadOnlyTransaction(session -> {
             var clientOptional = clientDataTemplate.findById(session, id);
             log.info("client: {}", clientOptional);
-            clientOptional.ifPresent(client -> cache.put(client.getId(), client));
+            clientOptional.ifPresent(client -> cache.put(KeyOfClient(client), client));
             return clientOptional;
         });
     }
@@ -68,7 +68,14 @@ public class DbServiceClientImpl implements DBServiceClient {
         });
     }
 
-    private static void cacheNotify(Long key, Client value, String action) {
+    private static void cacheNotify(String key, Client value, String action) {
         log.info("Cache says: key:{}, value:{}, action: {}", key, value, action);
+    }
+
+    private String KeyOfClient(Client client) {
+        return keyOfId(client.getId());
+    }
+    private String keyOfId(Long id) {
+        return String.valueOf(id);
     }
 }

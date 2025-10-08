@@ -33,7 +33,7 @@ public class DbServiceDemo {
 
         var transactionManager = new TransactionManagerHibernate(sessionFactory);
         var clientTemplate = new DataTemplateHibernate<>(Client.class);
-        var myCache = new MyCache<Long, Client>();
+        var myCache = new MyCache<String, Client>();
 
         var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate, myCache);
         var clientFirst = dbServiceClient.saveClient(new Client("dbServiceFirst"));

@@ -51,6 +51,9 @@ public class MyCache<K, V> implements HwCache<K, V> {
     }
 
     private String getRealKey(K key) {
+        if (key instanceof String) {
+            return (String) key;
+        }
         try {
             Objects.requireNonNull(key, "Key cannot be null");
             var keyString = String.valueOf(key);
