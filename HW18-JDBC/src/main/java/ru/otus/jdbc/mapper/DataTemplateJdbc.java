@@ -19,12 +19,16 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     private static final Logger log = LoggerFactory.getLogger(DataTemplateJdbc.class);
     private final DbExecutor dbExecutor;
-    private final EntitySQLMetaData entitySQLMetaData;
     private final Class<T> entityType;
+    private final Field idField;
 
     final String[] allSortedNames;
     final String[] nonIdSortedNames;
-    final String idFieldName;
+
+    final String sqlSelectById;
+    final String sqlSelectAll;
+    final String sqlInsert;
+    final String sqlUpdate;
 
     public DataTemplateJdbc(
             DbExecutor dbExecutor,
@@ -32,9 +36,8 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
             EntityClassMetaData<T> entityClassMetaData,
             Class<T> entityType) {
         this.dbExecutor = dbExecutor;
-        this.entitySQLMetaData = entitySQLMetaData;
         this.entityType = entityType;
-
+        this.idField = entityClassMetaData.getIdField();
         this.allSortedNames = entityClassMetaData.getAllFields().stream()
                 .map(Field::getName)
                 .sorted()
@@ -43,12 +46,16 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                 .map(Field::getName)
                 .sorted()
                 .toArray(String[]::new);
-        this.idFieldName = entityClassMetaData.getIdField().getName();
+
+        this.sqlSelectById = entitySQLMetaData.getSelectByIdSql();
+        this.sqlSelectAll = entitySQLMetaData.getSelectAllSql();
+        this.sqlInsert = entitySQLMetaData.getInsertSql();
+        this.sqlUpdate = entitySQLMetaData.getUpdateSql();
     }
 
     @Override
     public Optional<T> findById(Connection connection, long id) {
-        return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), List.of(id), rs -> {
+        return dbExecutor.executeSelect(connection, sqlSelectById, List.of(id), rs -> {
             try {
                 if (rs.next()) {
                     return createEntityFromResult(rs, entityType);
@@ -63,7 +70,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     @Override
     public List<T> findAll(Connection connection) {
         return dbExecutor
-                .executeSelect(connection, entitySQLMetaData.getSelectAllSql(), Collections.emptyList(), rs -> {
+                .executeSelect(connection, sqlSelectAll, Collections.emptyList(), rs -> {
                     var clientList = new ArrayList<T>();
                     try {
                         while (rs.next()) {
@@ -80,15 +87,10 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     @Override
     public long insert(Connection connection, T entity) {
         try {
-            var generatedId = dbExecutor.executeStatement(
-                    connection, entitySQLMetaData.getInsertSql(), getInsertFieldValues(entity));
-
-            var idField = Arrays.stream(entityType.getDeclaredFields())
-                    .filter(field -> field.getAnnotation(Id.class) != null)
-                    .findFirst();
-            if (idField.isPresent() && idField.get().getType() == Long.class) {
-                idField.get().setAccessible(true);
-                idField.get().set(entity, generatedId);
+            var generatedId = dbExecutor.executeStatement(connection, sqlInsert, getInsertFieldValues(entity));
+            if (idField.getType() == Long.class) {
+                idField.setAccessible(true);
+                idField.set(entity, generatedId);
             }
             return generatedId;
         } catch (Exception e) {
@@ -99,8 +101,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     @Override
     public void update(Connection connection, T client) {
         try {
-            dbExecutor.executeStatement(
-                    connection, entitySQLMetaData.getSelectByIdSql(), getFieldValuesForUpdate(client));
+            dbExecutor.executeStatement(connection, sqlUpdate, getFieldValuesForUpdate(client));
         } catch (Exception e) {
             throw new DataTemplateException(e);
         }
@@ -117,7 +118,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                         }
                     })
                     .toList());
-            fieldValues.add(entityType.getDeclaredField(idFieldName));
+            fieldValues.add(entityType.getDeclaredField(idField.getName()));
             return fieldValues;
         } catch (NoSuchFieldException e) {
             throw new DataTemplateException(e);
