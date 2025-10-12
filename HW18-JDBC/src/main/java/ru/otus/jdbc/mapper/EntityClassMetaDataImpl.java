@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
@@ -18,8 +19,8 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         this.name = entityClass.getSimpleName().toLowerCase();
         this.constructor = getDefaultConstructor(entityClass);
         this.allFields = getAllDeclaredFields(entityClass);
-        this.fieldsWithoutId = filterFieldsWithoutId(allFields);
-        this.fieldWithId = findFieldWithId(allFields);
+        this.fieldsWithoutId = getFieldsWithoutId(allFields);
+        this.fieldWithId = getFieldWithId(allFields);
     }
 
     @Override
@@ -70,10 +71,11 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
             currentClass = currentClass.getSuperclass();
         }
 
-        return List.copyOf(fields);
+        return List.copyOf(
+                fields.stream().sorted(Comparator.comparing(Field::getName)).toList());
     }
 
-    private Field findFieldWithId(List<Field> fields) {
+    private Field getFieldWithId(List<Field> fields) {
         var fieldsWithId = fields.stream().filter(this::isFieldIdAnnotated).toList();
         if (fieldsWithId.size() == 1) {
             return fieldsWithId.getFirst();
@@ -81,8 +83,11 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         throw new IllegalStateException("Class " + name + " must have exactly one @Id field");
     }
 
-    private List<Field> filterFieldsWithoutId(List<Field> fields) {
-        return fields.stream().filter(field -> !isFieldIdAnnotated(field)).toList();
+    private List<Field> getFieldsWithoutId(List<Field> fields) {
+        return fields.stream()
+                .filter(field -> !isFieldIdAnnotated(field))
+                .sorted(Comparator.comparing(Field::getName))
+                .toList();
     }
 
     private boolean isFieldIdAnnotated(Field field) {

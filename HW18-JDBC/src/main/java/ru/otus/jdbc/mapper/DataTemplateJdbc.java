@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.core.repository.DataTemplate;
@@ -21,9 +20,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     private final DbExecutor dbExecutor;
     private final Class<T> entityType;
     private final Field idField;
-
-    final String[] allSortedNames;
-    final String[] nonIdSortedNames;
+    private final List<Field> nonIdFields;
 
     final String sqlSelectById;
     final String sqlSelectAll;
@@ -37,20 +34,14 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
             Class<T> entityType) {
         this.dbExecutor = dbExecutor;
         this.entityType = entityType;
-        this.idField = entityClassMetaData.getIdField();
-        this.allSortedNames = entityClassMetaData.getAllFields().stream()
-                .map(Field::getName)
-                .sorted()
-                .toArray(String[]::new);
-        this.nonIdSortedNames = entityClassMetaData.getFieldsWithoutId().stream()
-                .map(Field::getName)
-                .sorted()
-                .toArray(String[]::new);
 
         this.sqlSelectById = entitySQLMetaData.getSelectByIdSql();
         this.sqlSelectAll = entitySQLMetaData.getSelectAllSql();
         this.sqlInsert = entitySQLMetaData.getInsertSql();
         this.sqlUpdate = entitySQLMetaData.getUpdateSql();
+
+        this.idField = entityClassMetaData.getIdField();
+        this.nonIdFields = entityClassMetaData.getFieldsWithoutId();
     }
 
     @Override
@@ -109,34 +100,32 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     private List<Object> getFieldValuesForUpdate(T client) {
         try {
-            List<Object> fieldValues = new ArrayList<>(Arrays.stream(nonIdSortedNames)
-                    .map(fieldName -> {
+            var fieldValues = new ArrayList<>(nonIdFields.stream()
+                    .map(field -> {
                         try {
-                            return entityType.getDeclaredField(fieldName).get(client);
-                        } catch (IllegalAccessException | NoSuchFieldException e) {
+                            return field.get(client);
+                        } catch (IllegalAccessException e) {
                             throw new DataTemplateException(e);
                         }
                     })
                     .toList());
-            fieldValues.add(entityType.getDeclaredField(idField.getName()));
+            fieldValues.add(idField.get(client));
             return fieldValues;
-        } catch (NoSuchFieldException e) {
+        } catch (IllegalAccessException e) {
             throw new DataTemplateException(e);
         }
     }
 
     private List<Object> getInsertFieldValues(T client) {
-        return Arrays.stream(nonIdSortedNames)
-                .map(fieldName -> {
+        return nonIdFields.stream()
+                .map(field -> {
                     try {
-                        var field = entityType.getDeclaredField(fieldName);
-                        field.setAccessible(true);
                         return field.get(client);
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         throw new DataTemplateException(e);
                     }
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static <T> T createEntityFromResult(ResultSet rs, Class<T> entityType) {
