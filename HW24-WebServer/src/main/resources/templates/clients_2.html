@@ -11,23 +11,8 @@
             background-color: #f5f5f5;
         }
 
-       .sidebar {
-            max-width: 80%;
-            margin: 0 auto;
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .sidebar-header {
-            padding: 0 20px 20px;
-            border-bottom: 1px solid #34495e;
-            margin-bottom: 20px;
-        }
         .container {
-            max-width: 80%;
+            max-width: 1000px;
             margin: 0 auto;
             background-color: white;
             padding: 20px;
@@ -82,34 +67,32 @@
             ext-align: left;
         }
 
-        .input {
-            width: 30%;
-            margin-bottom: 10px;
+        .sign-out-form {
+            margin: 0;
         }
 
+        .sign-out-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .sign-out-btn:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
 <div class="header">
     <h1>Clients Management System</h1>
-</div>
-<div class="sidebar">
-    <div class="sidebar-header">
-        <form action="create" method="post">
-        <label>
-            Name <br/>
-            <input class="input" type="text" name="name">
-        </label><br/>
-        <label>
-            Address <br/>
-            <input class="input" type="text" name="address">
-        </label><br/>
-        <label for="phones">Phones:</label><br/>
-        <textarea id="phones" name="phones" rows="5" cols="32"></textarea>
-        <br/><br/>
-        <input type="submit" value="Create new">
-        </form>
-    </div>
+    <#-- Simple redirect version -->
+    <a href="/login" class="sign-out-btn">Sign out</a>
+
 </div>
 <div class="container">
     <h1>Clients List</h1>

@@ -49,7 +49,7 @@ public class WebServerSimple implements WebServer {
 
         Handler.Sequence sequence = new Handler.Sequence();
         sequence.addHandler(resourceHandler);
-        sequence.addHandler(applySecurity(servletContextHandler, "/user.html", "/clients", "/clients/*"));
+        sequence.addHandler(applySecurity(servletContextHandler, "/clients"));
 
         server.setHandler(sequence);
     }
