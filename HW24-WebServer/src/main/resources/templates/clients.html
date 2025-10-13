@@ -95,7 +95,7 @@
 </div>
 <div class="sidebar">
     <div class="sidebar-header">
-        <form action="create" method="post">
+        <form action="client/create" method="post">
         <label>
             Name <br/>
             <input class="input" type="text" name="name">
@@ -120,6 +120,8 @@
         <tr>
             <th>ID</th>
             <th>Name</th>
+            <th>Address</th>
+            <th>Phone</th>
         </tr>
         </thead>
         <tbody>
@@ -127,6 +129,8 @@
         <tr>
             <td class="client-id">${client.id}</td>
             <td class="client-name">${client.name}</td>
+            <td class="client-name"><#if client.address??>${client.address.street}</#if></td>
+            <td class="client-name"><#if client.phones?? && client.phones?size gt 0>${client.phones[0].number}</#if></td>
         </tr>
         </#list>
         </tbody>

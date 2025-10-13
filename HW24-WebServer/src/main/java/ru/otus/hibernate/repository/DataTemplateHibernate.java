@@ -30,8 +30,10 @@ public class DataTemplateHibernate<T> implements DataTemplate<T> {
 
     @Override
     public List<T> findAll(Session session) {
-        return session.createQuery(String.format("from %s", clazz.getSimpleName()), clazz)
+        return session.createQuery(String.format("select s from %s s", clazz.getSimpleName()), clazz)
                 .getResultList();
+        //        return session.createQuery(String.format("from %s", clazz.getSimpleName()), clazz)
+        //                .getResultList();
     }
 
     @Override

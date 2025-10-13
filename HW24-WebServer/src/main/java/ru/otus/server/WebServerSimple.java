@@ -8,6 +8,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import ru.otus.helpers.FileSystemHelper;
 import ru.otus.services.DBServiceClient;
 import ru.otus.services.TemplateProcessor;
+import ru.otus.servlet.ClientServlet;
 import ru.otus.servlet.ClientsServlet;
 
 public class WebServerSimple implements WebServer {
@@ -72,6 +73,8 @@ public class WebServerSimple implements WebServer {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletContextHandler.addServlet(
                 new ServletHolder(new ClientsServlet(templateProcessor, serviceClient)), "/clients");
+        servletContextHandler.addServlet(
+                new ServletHolder(new ClientServlet(templateProcessor, serviceClient)), "/client/create");
         return servletContextHandler;
     }
 }

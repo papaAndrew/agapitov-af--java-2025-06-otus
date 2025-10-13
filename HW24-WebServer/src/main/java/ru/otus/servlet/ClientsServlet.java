@@ -25,7 +25,9 @@ public class ClientsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put("clients", serviceClient.findAll());
+        var clients = serviceClient.findAll();
+        paramsMap.put("clients", clients);
+        System.out.println("clients = " + clients);
 
         response.setContentType("text/html");
         response.getWriter().println(templateProcessor.getPage(PAGE_CLIENT_LIST_TEMPLATE, paramsMap));
