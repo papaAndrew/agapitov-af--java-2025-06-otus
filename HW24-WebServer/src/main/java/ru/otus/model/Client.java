@@ -29,11 +29,16 @@ public class Client implements Cloneable {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Phone> phones;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Client(String name) {
         this.id = null;
         this.name = name;
         this.address = null;
         this.phones = null;
+        this.user = null;
     }
 
     public Client(Long id, String name) {
@@ -41,6 +46,7 @@ public class Client implements Cloneable {
         this.name = name;
         this.address = null;
         this.phones = null;
+        this.user = null;
     }
 
     @SuppressWarnings("this-escape")
@@ -49,6 +55,7 @@ public class Client implements Cloneable {
         this.name = name;
         setAddress(address);
         setPhones(phones);
+        this.user = null;
     }
 
     public void setAddress(Address address) {

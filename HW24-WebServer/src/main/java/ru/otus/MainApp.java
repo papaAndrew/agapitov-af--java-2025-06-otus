@@ -11,6 +11,7 @@ import ru.otus.hibernate.sessionmanager.TransactionManagerHibernate;
 import ru.otus.model.Address;
 import ru.otus.model.Client;
 import ru.otus.model.Phone;
+import ru.otus.model.User;
 import ru.otus.server.SecuredWebServer;
 import ru.otus.server.WebServer;
 import ru.otus.services.*;
@@ -31,8 +32,8 @@ public class MainApp {
         new MigrationsExecutorFlyway(dbUrl, dbUserName, dbPassword).executeMigrations();
 
         var dbServiceClient = new DbServiceClientImpl(
-                new TransactionManagerHibernate(
-                        HibernateUtils.buildSessionFactory(configuration, Client.class, Address.class, Phone.class)),
+                new TransactionManagerHibernate(HibernateUtils.buildSessionFactory(
+                        configuration, Client.class, Address.class, Phone.class, User.class)),
                 new DataTemplateHibernate<>(Client.class));
         addDefaultData(dbServiceClient);
 
@@ -51,6 +52,7 @@ public class MainApp {
 
     private static void addDefaultData(DBServiceClient dbServiceClient) {
         var admin = new Client(null, "admin");
+        admin.setUser(new User(null, "admin"));
         findOrCreateClient(dbServiceClient, admin);
 
         var analyst =

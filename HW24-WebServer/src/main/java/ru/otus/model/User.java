@@ -1,32 +1,31 @@
 package ru.otus.model;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+@Table(name = "address")
 public class User {
 
-    private final long id;
-    private final String name;
-    private final String login;
-    private final String password;
+    @Id
+    @SequenceGenerator(name = "address_gen", sequenceName = "user_SEQ", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_gen")
+    @Column(name = "id")
+    private Long id;
 
-    public User(long id, String name, String login, String password) {
+    @Column(name = "passw")
+    private String password;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Client client;
+
+    public User(Long id, String password) {
         this.id = id;
-        this.name = name;
-        this.login = login;
         this.password = password;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public String getPassword() {
-        return password;
     }
 }
