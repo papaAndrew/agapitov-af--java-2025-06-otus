@@ -94,26 +94,22 @@
     <h1>Clients Management System</h1>
 </div>
 <div class="sidebar">
-    <div class="sidebar-header">
-        <form action="client/create" method="post">
-        <label>
-            Name <br/>
-            <input class="input" type="text" name="name">
-        </label><br/>
-        <label>
-            Address <br/>
-            <input class="input" type="text" name="address">
-        </label><br/>
-        <label for="phones">Phones:</label><br/>
-        <textarea id="phones" name="phones" rows="5" cols="32"></textarea>
-        <br/><br/>
-        <input type="submit" value="Create new">
-        </form>
-    </div>
+    <form action="client/create" method="post">
+    <label>
+        Name <br/>
+        <input class="input" type="text" name="name">
+    </label><br/>
+    <label>
+        Address <br/>
+        <input class="input" type="text" name="address">
+    </label><br/>
+    <label for="phones">Phones:</label><br/>
+    <textarea id="phones" name="phones" rows="5" cols="32"></textarea>
+    <br/><br/>
+    <input type="submit" value="Create new">
+    </form>
 </div>
 <div class="container">
-    <h1>Clients List</h1>
-
     <#if clients?? && clients?size gt 0>
     <table class="clients-table">
         <thead>
