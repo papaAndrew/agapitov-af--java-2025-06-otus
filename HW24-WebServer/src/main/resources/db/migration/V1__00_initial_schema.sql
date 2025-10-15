@@ -12,7 +12,7 @@ create table client
 create sequence client_SEQ start with 1 increment by 1;
 create sequence address_SEQ start with 1 increment by 1;
 create sequence phone_SEQ start with 1 increment by 1;
-create sequence user_SEQ start with 1 increment by 1;
+create sequence acc_SEQ start with 1 increment by 1;
 
 create table client
 (
@@ -34,7 +34,7 @@ create table phone
     client_id bigint,
     number varchar(64)
 );
-create table "user"
+create table acc
 (
     id bigint not null primary key,
     client_id bigint,

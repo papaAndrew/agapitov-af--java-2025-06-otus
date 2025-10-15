@@ -72,6 +72,14 @@ public class Client implements Cloneable {
         }
     }
 
+    public Client user(User user) {
+        this.user = user;
+        if (this.user != null) {
+            this.user.setClient(this);
+        }
+        return this;
+    }
+
     @Override
     public Client clone() {
         var clonedAddress = this.address == null ? null : (Address) this.address.clone();
@@ -80,7 +88,8 @@ public class Client implements Cloneable {
                     this.phones.stream().map(phone -> (Phone) phone.clone()).toList();
             return new Client(this.id, this.name, clonedAddress, clonedPhones);
         }
-        return new Client(this.id, this.name, clonedAddress, null);
+        var clonedUser = this.user == null ? null : (User) this.user.clone();
+        return new Client(this.id, this.name, clonedAddress, null).user(clonedUser);
     }
 
     @Override
@@ -88,6 +97,7 @@ public class Client implements Cloneable {
         var delim = "," + '\n';
         return "Client{id=" + id + delim + "    name='" + name + '\'' + delim
                 + "    address=" + address + delim
+                + "    user=" + user + delim
                 + "    phones=" + phones
                 + delim
                 + '}';

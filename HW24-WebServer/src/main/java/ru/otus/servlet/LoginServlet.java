@@ -45,6 +45,7 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("/clients");
         } else {
             response.setStatus(SC_UNAUTHORIZED);
+            response.sendRedirect("/index.html");
         }
     }
 }

@@ -9,12 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "address")
+@Table(name = "acc")
 public class User {
 
     @Id
-    @SequenceGenerator(name = "address_gen", sequenceName = "user_SEQ", initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_gen")
+    @SequenceGenerator(name = "acc_gen", sequenceName = "acc_SEQ", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acc_gen")
     @Column(name = "id")
     private Long id;
 
@@ -27,5 +27,15 @@ public class User {
     public User(Long id, String password) {
         this.id = id;
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{id=" + id + " password='" + password + "'}'";
+    }
+
+    @Override
+    protected Object clone() {
+        return new User(id, password);
     }
 }

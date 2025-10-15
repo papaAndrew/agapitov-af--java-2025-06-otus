@@ -42,7 +42,7 @@ public class MainApp {
 
     private static void serverStart(DBServiceClient dbServiceClient) throws Exception {
         TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
-        UserAuthService authService = new UserAuthServiceImpl();
+        UserAuthService authService = new UserAuthServiceImpl(dbServiceClient);
 
         WebServer webServer = new SecuredWebServer(WEB_SERVER_PORT, authService, dbServiceClient, templateProcessor);
 
@@ -51,8 +51,7 @@ public class MainApp {
     }
 
     private static void addDefaultData(DBServiceClient dbServiceClient) {
-        var admin = new Client(null, "admin");
-        admin.setUser(new User(null, "admin"));
+        var admin = new Client(null, "admin").user(new User(null, "admin"));
         findOrCreateClient(dbServiceClient, admin);
 
         var analyst =
