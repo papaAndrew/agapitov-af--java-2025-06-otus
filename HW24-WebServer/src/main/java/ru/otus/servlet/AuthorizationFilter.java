@@ -33,7 +33,7 @@ public class AuthorizationFilter implements Filter {
         HttpSession session = request.getSession(false);
 
         if (session == null) {
-            response.sendRedirect("/login");
+            response.sendRedirect("/index.html");
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
         }

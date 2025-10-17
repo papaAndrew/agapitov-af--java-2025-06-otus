@@ -1,29 +1,26 @@
 package ru.otus.server;
 
-import com.google.gson.Gson;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import ru.otus.dao.UserDao;
 import ru.otus.helpers.FileSystemHelper;
+import ru.otus.services.DBServiceClient;
 import ru.otus.services.TemplateProcessor;
-import ru.otus.servlet.UsersApiServlet;
-import ru.otus.servlet.UsersServlet;
+import ru.otus.servlet.ClientServlet;
+import ru.otus.servlet.ClientsServlet;
 
-public class UsersWebServerSimple implements UsersWebServer {
+public class WebServerSimple implements WebServer {
     private static final String START_PAGE_NAME = "index.html";
     private static final String COMMON_RESOURCES_DIR = "static";
 
-    private final UserDao userDao;
-    private final Gson gson;
+    private final DBServiceClient serviceClient;
     protected final TemplateProcessor templateProcessor;
     private final Server server;
 
-    public UsersWebServerSimple(int port, UserDao userDao, Gson gson, TemplateProcessor templateProcessor) {
-        this.userDao = userDao;
-        this.gson = gson;
+    public WebServerSimple(int port, DBServiceClient serviceClient, TemplateProcessor templateProcessor) {
+        this.serviceClient = serviceClient;
         this.templateProcessor = templateProcessor;
         server = new Server(port);
     }
@@ -53,7 +50,7 @@ public class UsersWebServerSimple implements UsersWebServer {
 
         Handler.Sequence sequence = new Handler.Sequence();
         sequence.addHandler(resourceHandler);
-        sequence.addHandler(applySecurity(servletContextHandler, "/users", "/api/user/*"));
+        sequence.addHandler(applySecurity(servletContextHandler, "/clients"));
 
         server.setHandler(sequence);
     }
@@ -74,8 +71,10 @@ public class UsersWebServerSimple implements UsersWebServer {
 
     private ServletContextHandler createServletContextHandler() {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        servletContextHandler.addServlet(new ServletHolder(new UsersServlet(templateProcessor, userDao)), "/users");
-        servletContextHandler.addServlet(new ServletHolder(new UsersApiServlet(userDao, gson)), "/api/user/*");
+        servletContextHandler.addServlet(
+                new ServletHolder(new ClientsServlet(templateProcessor, serviceClient)), "/clients");
+        servletContextHandler.addServlet(
+                new ServletHolder(new ClientServlet(templateProcessor, serviceClient)), "/client/create");
         return servletContextHandler;
     }
 }

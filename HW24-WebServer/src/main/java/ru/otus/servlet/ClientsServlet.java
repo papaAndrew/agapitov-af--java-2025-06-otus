@@ -6,29 +6,30 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import ru.otus.dao.UserDao;
+import ru.otus.services.DBServiceClient;
 import ru.otus.services.TemplateProcessor;
 
 @SuppressWarnings({"java:S1989"})
-public class UsersServlet extends HttpServlet {
+public class ClientsServlet extends HttpServlet {
 
-    private static final String USERS_PAGE_TEMPLATE = "users.html";
-    private static final String TEMPLATE_ATTR_RANDOM_USER = "randomUser";
+    private static final String PAGE_CLIENT_LIST_TEMPLATE = "clients.html";
 
-    private final transient UserDao userDao;
+    private final transient DBServiceClient serviceClient;
     private final transient TemplateProcessor templateProcessor;
 
-    public UsersServlet(TemplateProcessor templateProcessor, UserDao userDao) {
+    public ClientsServlet(TemplateProcessor templateProcessor, DBServiceClient serviceClient) {
         this.templateProcessor = templateProcessor;
-        this.userDao = userDao;
+        this.serviceClient = serviceClient;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         Map<String, Object> paramsMap = new HashMap<>();
-        userDao.findRandomUser().ifPresent(randomUser -> paramsMap.put(TEMPLATE_ATTR_RANDOM_USER, randomUser));
+        var clients = serviceClient.findAll();
+        paramsMap.put("clients", clients);
+        System.out.println("clients = " + clients);
 
         response.setContentType("text/html");
-        response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, paramsMap));
+        response.getWriter().println(templateProcessor.getPage(PAGE_CLIENT_LIST_TEMPLATE, paramsMap));
     }
 }
