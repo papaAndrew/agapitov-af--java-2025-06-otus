@@ -3,6 +3,8 @@ package ru.otus.appcontainer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
 import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
@@ -15,24 +17,24 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     @SuppressWarnings("this-escape")
     public AppComponentsContainerImpl(Class<?> initialConfigClass) {
-        processConfig(initialConfigClass);
+        processConfigs(List.of(initialConfigClass));
     }
 
-    private void processConfig(Class<?> configClass) {
-        checkConfigClass(configClass);
+    @SuppressWarnings("this-escape")
+    public AppComponentsContainerImpl(Class<?>... initialConfigs) {
+        processConfigs(Arrays.stream(initialConfigs).toList());
+    }
 
-        var componentCreators = Arrays.stream(configClass.getDeclaredMethods())
-                .filter(item -> item.isAnnotationPresent(AppComponent.class))
-                .sorted((item1, item2) -> Integer.compareUnsigned(
-                        item1.getDeclaredAnnotation(AppComponent.class).order(),
-                        item2.getDeclaredAnnotation(AppComponent.class).order()))
-                .toList();
-
-        var configInstance = createNoArgsInstance(configClass);
-        for (Method method : componentCreators) {
-            var key = method.getDeclaredAnnotation(AppComponent.class).name();
-            addComponent(key, createComponent(method, configInstance));
-        }
+    @SuppressWarnings("this-escape")
+    public AppComponentsContainerImpl(String packageName) {
+        Reflections reflections = new Reflections(packageName, Scanners.TypesAnnotated, Scanners.SubTypes);
+        var configClasses =
+                reflections
+                        .get(Scanners.TypesAnnotated.with(AppComponentsContainerConfig.class)
+                                .asClass())
+                        .stream()
+                        .toList();
+        processConfigs(configClasses);
     }
 
     @SuppressWarnings("unchecked")
@@ -84,9 +86,41 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         }
     }
 
-    private void checkConfigClass(Class<?> configClass) {
+    private Class<?> checkConfigClass(Class<?> configClass) {
         if (!configClass.isAnnotationPresent(AppComponentsContainerConfig.class)) {
             throw new IllegalArgumentException(String.format("Given class is not config %s", configClass.getName()));
+        }
+        return configClass;
+    }
+
+    private void processConfig(Class<?> configClass) {
+
+        var componentCreators = Arrays.stream(configClass.getDeclaredMethods())
+                .filter(item -> item.isAnnotationPresent(AppComponent.class))
+                .sorted((item1, item2) -> Integer.compareUnsigned(
+                        item1.getDeclaredAnnotation(AppComponent.class).order(),
+                        item2.getDeclaredAnnotation(AppComponent.class).order()))
+                .toList();
+
+        var configInstance = createNoArgsInstance(configClass);
+        for (Method method : componentCreators) {
+            var key = method.getDeclaredAnnotation(AppComponent.class).name();
+            addComponent(key, createComponent(method, configInstance));
+        }
+    }
+
+    private void processConfigs(List<Class<?>> configClasses) {
+        var sortedList = configClasses.stream()
+                .map(this::checkConfigClass)
+                .sorted((item1, item2) -> Integer.compareUnsigned(
+                        item1.getDeclaredAnnotation(AppComponentsContainerConfig.class)
+                                .order(),
+                        item2.getDeclaredAnnotation(AppComponentsContainerConfig.class)
+                                .order()))
+                .toList();
+
+        for (Class<?> configClass : sortedList) {
+            processConfig(configClass);
         }
     }
 }
