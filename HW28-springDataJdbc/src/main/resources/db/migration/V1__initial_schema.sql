@@ -1,28 +1,21 @@
-create table Manager
-(
-    id    varchar(50) not null primary key,
-    label varchar(50)
-);
-
 create table client
 (
-    id           bigserial   not null primary key,
-    order_column int         not null,
-    name         varchar(50) not null,
-    manager_id   varchar(50) not null references Manager (id)
-);
-create index idx_client_manager_id on client (manager_id);
-
-create table client_details
-(
-    client_id bigint      not null references client (id),
-    info      varchar(50) not null
+    id          bigserial   not null    primary key,
+    name        varchar(50) not null,
+    address_id  bigint
 );
 
-create table table_with_pk
+create table address
 (
-    id_part1 varchar(10),
-    id_part2 varchar(100),
-    value    varchar(100)
+    client_id   bigint      not null    references client (id),
+    street varchar(64)      not null
 );
-alter table table_with_pk add primary key (id_part1, id_part2);
+create index idx_address_client_id on address (client_id);
+
+create table phone
+(
+    id          bigserial   not null    primary key,
+    client_id   bigint      not null    references client (id),
+    number      varchar(64) not null
+);
+create index idx_phone_client_id on phone (client_id);
