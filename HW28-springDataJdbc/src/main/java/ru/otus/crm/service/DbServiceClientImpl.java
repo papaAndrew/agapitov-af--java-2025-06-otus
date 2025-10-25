@@ -6,8 +6,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.otus.crm.model.Client;
-import ru.otus.crm.repository.ClientRepository;
 import ru.otus.sessionmanager.TransactionManager;
 
 @Service
@@ -23,7 +21,7 @@ public class DbServiceClientImpl implements DBServiceClient {
     }
 
     @Override
-    public Client saveClient(Client client) {
+    public ClientRec saveClient(ClientRec client) {
         return transactionManager.doInTransaction(() -> {
             var savedClient = clientRepository.save(client);
             log.info("saved client: {}", savedClient);
@@ -32,15 +30,15 @@ public class DbServiceClientImpl implements DBServiceClient {
     }
 
     @Override
-    public Optional<Client> getClient(long id) {
+    public Optional<ClientRec> getClient(long id) {
         var clientOptional = clientRepository.findById(id);
         log.info("client: {}", clientOptional);
         return clientOptional;
     }
 
     @Override
-    public List<Client> findAll() {
-        var clientList = new ArrayList<Client>();
+    public List<ClientRec> findAll() {
+        var clientList = new ArrayList<ClientRec>();
         clientRepository.findAll().forEach(clientList::add);
         log.info("clientList:{}", clientList);
         return clientList;

@@ -8,13 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import ru.otus.crm.model.Client;
-import ru.otus.crm.model.ClientDetails;
-import ru.otus.crm.model.Manager;
-import ru.otus.crm.model.TableWithPk;
 import ru.otus.crm.repository.ClientRepository;
-import ru.otus.crm.repository.ManagerRepository;
-import ru.otus.crm.repository.TableWithPkRepository;
 import ru.otus.crm.service.DBServiceClient;
 import ru.otus.crm.service.DBServiceManager;
 
@@ -23,7 +17,7 @@ public class ActionDemo implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(ActionDemo.class);
 
     private final ClientRepository clientRepository;
-    private final ManagerRepository managerRepository;
+    private final ClientRepository managerRepository;
     private final DBServiceClient dbServiceClient;
     private final DBServiceManager dbServiceManager;
 
@@ -31,7 +25,7 @@ public class ActionDemo implements CommandLineRunner {
 
     public ActionDemo(
             ClientRepository clientRepository,
-            ManagerRepository managerRepository,
+            ClientRepository managerRepository,
             DBServiceClient dbServiceClient,
             DBServiceManager dbServiceManager,
             TableWithPkRepository tableWithPkRepository) {
@@ -55,11 +49,11 @@ public class ActionDemo implements CommandLineRunner {
                 managerName,
                 "ManagerSecond",
                 Set.of(
-                        new Client(null, "managClient1", managerName, 11, new ClientDetails(null, "inf01")),
-                        new Client(null, "managClient2", managerName, 22, new ClientDetails(null, "info2"))),
+                        new ClientRec(null, "managClient1", managerName, 11, new ClientDetails(null, "inf01")),
+                        new ClientRec(null, "managClient2", managerName, 22, new ClientDetails(null, "info2"))),
                 List.of(
-                        new Client(null, "managClient1Ordered", managerName, 100, new ClientDetails(null, "inf01")),
-                        new Client(null, "managClient2Ordered", managerName, 200, new ClientDetails(null, "info2"))),
+                        new ClientRec(null, "managClient1Ordered", managerName, 100, new ClientDetails(null, "inf01")),
+                        new ClientRec(null, "managClient2Ordered", managerName, 200, new ClientDetails(null, "info2"))),
                 true));
         log.info(">>> get Manager:{}", managerSecond.getId());
         var managerSecondSelected = dbServiceManager
@@ -76,14 +70,14 @@ public class ActionDemo implements CommandLineRunner {
         log.info(">>> managerUpdated:{}", managerUpdated);
 
         /// создаем Client
-        var firstClient = dbServiceClient.saveClient(new Client(
+        var firstClient = dbServiceClient.saveClient(new ClientRec(
                 null,
                 "dbServiceFirst" + System.currentTimeMillis(),
                 managerSecond.getId(),
                 1,
                 new ClientDetails(null, "init1")));
 
-        var clientSecond = dbServiceClient.saveClient(new Client(
+        var clientSecond = dbServiceClient.saveClient(new ClientRec(
                 null,
                 "dbServiceSecond" + System.currentTimeMillis(),
                 managerSecond.getId(),
@@ -96,7 +90,7 @@ public class ActionDemo implements CommandLineRunner {
 
         log.info("delete instead of update");
         /// обновляем Client
-        dbServiceClient.saveClient(new Client(
+        dbServiceClient.saveClient(new ClientRec(
                 clientSecondSelected.id(),
                 "dbServiceSecondUpdated",
                 managerSecond.getId(),

@@ -5,18 +5,17 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.otus.crm.model.Manager;
-import ru.otus.crm.repository.ManagerRepository;
+import ru.otus.crm.repository.ClientRepository;
 import ru.otus.sessionmanager.TransactionManager;
 
 @Service
 public class DbServiceManagerImpl implements DBServiceManager {
     private static final Logger log = LoggerFactory.getLogger(DbServiceManagerImpl.class);
 
-    private final ManagerRepository managerRepository;
+    private final ClientRepository managerRepository;
     private final TransactionManager transactionManager;
 
-    public DbServiceManagerImpl(ManagerRepository managerRepository, TransactionManager transactionManager) {
+    public DbServiceManagerImpl(ClientRepository managerRepository, TransactionManager transactionManager) {
         this.managerRepository = managerRepository;
         this.transactionManager = transactionManager;
     }

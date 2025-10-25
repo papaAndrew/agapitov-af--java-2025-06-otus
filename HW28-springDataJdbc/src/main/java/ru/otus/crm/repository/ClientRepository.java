@@ -1,20 +1,27 @@
 package ru.otus.crm.repository;
 
-import java.util.Optional;
-import org.springframework.data.jdbc.repository.query.Modifying;
+import java.math.BigInteger;
+import java.util.List;
+
+import jakarta.annotation.Nonnull;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.data.repository.query.Param;
 import ru.otus.crm.model.Client;
 
-public interface ClientRepository extends ListCrudRepository<Client, Long> {
+public interface ClientRepository extends ListCrudRepository<Client, BigInteger> {
 
-    Optional<Client> findByName(String name);
-
-    @Query("select * from client where upper(name) = upper(:name)")
-    Optional<Client> findByNameIgnoreCase(@Param("name") String name);
-
-    @Modifying
-    @Query("update client set name = :newName where id = :id")
-    void updateName(@Param("id") long id, @Param("newName") String newName);
+    @Override
+    @Query(value = """
+            select cl.id      as client_id,
+                   cl.name    as client_name,
+                   adr.street as address_street,
+                   ph.id      as phone_id,
+                   ph.number  as phone_number,
+            from client cl
+                left join address adr on cl.id = adr.client_id
+                left join phone ph on cl.id = ph.client_id
+            order by cl.id;""",
+            resultSetExtractorClass = ClientResultSetExtractorClass.class)
+    @Nonnull
+    List<Client> findAll();
 }
