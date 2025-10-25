@@ -51,9 +51,11 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     @SuppressWarnings("unchecked")
     @Override
     public <C> C getAppComponent(String componentName) {
-        var optionalComponent = Optional.ofNullable(appComponentsByName.get(componentName));
-        return (C) optionalComponent.orElseThrow(
-                () -> new SomethingWrongException("Component unavailable " + componentName));
+        var component = appComponentsByName.get(componentName);
+        if (component == null) {
+            throw new SomethingWrongException("Component unavailable " + componentName);
+        }
+        return (C) component;
     }
 
     private static <C> C createNoArgsInstance(Class<C> componentClass) {
