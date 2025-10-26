@@ -1,8 +1,7 @@
 package ru.otus.crm.model;
 
-import jakarta.annotation.Nonnull;
+import java.util.List;
 import lombok.Getter;
-import org.flywaydb.core.internal.util.IOUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
@@ -10,16 +9,11 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Set;
-
 @Table("client")
 @Getter
 public class Client implements Persistable<String> {
 
     @Id
-    @Nonnull
     private final Long id;
 
     private final String name;
@@ -33,12 +27,16 @@ public class Client implements Persistable<String> {
     @Transient
     private final boolean isNew;
 
-    public Client(@Nonnull Long id, String name, Address address, List<Phone> phones, boolean isNew) {
+    public Client(Long id, String name, Address address, List<Phone> phones, boolean isNew) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.phones = phones;
         this.isNew = isNew;
+    }
+
+    public Client(String name, Address address, List<Phone> phones) {
+        this(null, name, address, phones, true);
     }
 
     @PersistenceCreator
