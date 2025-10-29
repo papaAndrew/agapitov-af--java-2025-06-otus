@@ -21,7 +21,7 @@ public class Client implements Persistable<String> {
     @MappedCollection(idColumn = "client_id")
     private final Address address;
 
-    @MappedCollection(idColumn = "client_id")
+    @MappedCollection(idColumn = "client_id", keyColumn = "number")
     private final List<Phone> phones;
 
     @Transient
@@ -33,10 +33,6 @@ public class Client implements Persistable<String> {
         this.address = address;
         this.phones = phones;
         this.isNew = isNew;
-    }
-
-    public Client(String name, Address address, List<Phone> phones) {
-        this(null, name, address, phones, true);
     }
 
     @PersistenceCreator
@@ -51,7 +47,7 @@ public class Client implements Persistable<String> {
 
     @Override
     public String getId() {
-        return String.valueOf(id);
+        return id != null ? String.valueOf(id) : null;
     }
 
     @Override

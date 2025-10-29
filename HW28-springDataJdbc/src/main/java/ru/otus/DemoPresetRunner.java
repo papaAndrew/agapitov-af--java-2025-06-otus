@@ -1,7 +1,6 @@
 package ru.otus;
 
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -24,20 +23,23 @@ public class DemoPresetRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        findOrCreateClient("admin",
-                new Address(null, "Квантовой сингулярности ул"),
-                List.of(new Phone(null, null, "223-322")));
-        //        findOrCreateClient(
-        //                "analyst",
-        //                new Address(null, "Квантовой сингулярности ул"),
-        //                List.of(new Phone(null, null, "223-322")));
-
+        findOrCreateClient(
+                "admin", new Address(null, "Квантовой сингулярности ул"), List.of(new Phone(null, null, "223-322")));
+        findOrCreateClient(
+                "Аналитик",
+                new Address(null, "Сущности тупик"),
+                List.of(new Phone(null, null, "888-111"), new Phone(null, null, "777-222")));
+        findOrCreateClient(
+                "Директор",
+                new Address(null, "Капуцинов блв"),
+                List.of(new Phone(null, null, "000-333"), new Phone(null, null, "555-666")));
     }
 
     private void findOrCreateClient(String name, Address address, List<Phone> phones) {
+
         if (dbServiceClient.findByName(name).isEmpty()) {
             log.info("Create new Client {}", name);
-            dbServiceClient.saveClient(new Client(name, address, phones));
+            dbServiceClient.saveClient(new Client(null, name, address, phones, true));
         }
     }
 }

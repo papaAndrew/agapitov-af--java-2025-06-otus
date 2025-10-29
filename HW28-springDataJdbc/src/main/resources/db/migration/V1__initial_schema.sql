@@ -1,16 +1,15 @@
 create table client
 (
     id          bigserial   not null    primary key,
-    name        varchar(50) not null,
-    address_id  bigint
+    name        varchar(50) not null
 );
+create unique index idx_client_name on client (name);
 
 create table address
 (
-    client_id   bigint      not null    references client (id),
+    client_id   bigint      not null    primary key references client (id),
     street varchar(64)      not null
 );
-create index idx_address_client_id on address (client_id);
 
 create table phone
 (
@@ -18,4 +17,3 @@ create table phone
     client_id   bigint      not null    references client (id),
     number      varchar(64) not null
 );
-create index idx_phone_client_id on phone (client_id);
