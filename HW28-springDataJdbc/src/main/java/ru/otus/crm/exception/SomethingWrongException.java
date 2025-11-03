@@ -1,4 +1,4 @@
-package ru.otus.crm.excheption;
+package ru.otus.crm.exception;
 
 public class SomethingWrongException extends RuntimeException {
 
