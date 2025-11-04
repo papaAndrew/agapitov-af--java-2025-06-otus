@@ -21,7 +21,7 @@ public class Client implements Persistable<String> {
     @MappedCollection(idColumn = "client_id")
     private final Address address;
 
-    @MappedCollection(idColumn = "client_id", keyColumn = "number")
+    @MappedCollection(idColumn = "client_id", keyColumn = "priority")
     private final List<Phone> phones;
 
     @Transient
@@ -58,5 +58,12 @@ public class Client implements Persistable<String> {
                 + "    phones=" + phones
                 + delim
                 + '}';
+    }
+
+    public String getPhoneNumberDefault() {
+        if (phones == null || phones.isEmpty()) {
+            return null;
+        }
+        return phones.getFirst().number();
     }
 }

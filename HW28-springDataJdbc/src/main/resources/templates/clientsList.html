@@ -94,19 +94,16 @@
     <h1>Clients Management System</h1>
 </div>
 <div class="sidebar">
-    <form action="client/create" method="post">
-        <label>
-            Name <br/>
-            <input class="input" type="text" name="name">
-        </label><br/>
-        <label>
-            Address <br/>
-            <input class="input" type="text" name="address">
-        </label><br/>
-        <label for="phones">Phones:</label><br/>
-        <textarea id="phones" name="phones" rows="5" cols="32"></textarea>
-        <br/><br/>
-        <input type="submit" value="Create new">
+    <form id="create-form" th:action="@{/client/save}" th:object="${clientView}" th:method="post"
+          accept-charset="utf-8">
+        <label for="clientName">Name</label><br/>
+        <input class="input" id="clientName" name="name" type="text" th:value="*{name}"/><br/>
+        <label for="clientAddress">Address</label><br/>
+        <input class="input" id="clientAddress" type="text" name="street" th:value="*{street}"><br/>
+        <label for="clientPhones">Phones:</label><br/>
+        <textarea id="clientPhones" name="phone" rows="5" cols="32" th:value="*{phone}"></textarea><br/>
+        <br/>
+        <button type="submit">Create new</button>
     </form>
 </div>
 <div class="container">
@@ -123,10 +120,8 @@
         <tr th:each="client : ${clients}">
             <td class="client-id" th:text="${client.id}">1</td>
             <td class="client-name" th:text="${client.name}">John Doe</td>
-            <td class="client-name" th:text="${client.address.street}">Street</td>
-            <td class="client-name">Phone</td>
-            -->
-            <!--        <td class="client-name" th:text="${client.phones[0].street}">Phone</td>-->
+            <td class="client-name" th:text="${client.street}">Street</td>
+            <td class="client-name" th:text="${client.phone}">Phone</td>
         </tr>
         </tbody>
     </table>

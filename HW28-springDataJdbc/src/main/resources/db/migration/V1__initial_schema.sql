@@ -15,5 +15,6 @@ create table phone
 (
     id          bigserial   not null    primary key,
     client_id   bigint      not null    references client (id),
+    priority    integer     not null,
     number      varchar(64) not null
 );
