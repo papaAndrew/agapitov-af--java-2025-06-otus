@@ -2,7 +2,6 @@ package ru.otus.view;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
-
 import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
