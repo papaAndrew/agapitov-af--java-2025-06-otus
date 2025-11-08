@@ -48,7 +48,6 @@ class SensorDataProcessorBufferedTest {
     void shouldExecFlushWhenBufferOverFlow() {
         List<SensorData> sensorDataList = getSensorDataForTest(BUFFER_SIZE + BUFFER_SIZE / 2);
 
-        //        log.info("sensorDataList.size = {}", sensorDataList.size());
         sensorDataList.forEach(sensorData -> processor.process(sensorData));
         var outOfFirstBufferData = new SensorData(LocalDateTime.now(), ANY_ROOM, 10500d);
         processor.process(outOfFirstBufferData);
