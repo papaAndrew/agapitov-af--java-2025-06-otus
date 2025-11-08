@@ -1,18 +1,19 @@
 plugins {
-    id("java")
+    id("org.springframework.boot")
 }
 
-group = "ru.sinara"
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-}
+    implementation("ch.qos.logback:logback-classic")
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.postgresql:postgresql")
+    implementation("com.google.code.findbugs:jsr305")
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("com.google.code.gson:gson")
 
-tasks.test {
-    useJUnitPlatform()
+    runtimeOnly("org.flywaydb:flyway-database-postgresql")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 }

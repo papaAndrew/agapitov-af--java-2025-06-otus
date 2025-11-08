@@ -1,6 +1,7 @@
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
-import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
+import name.remal.gradle_plugins.sonarlint.SonarLintExtension
 import org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
 
 plugins {
     idea
@@ -23,7 +24,7 @@ idea {
 
 
 allprojects {
-    group = "ru.sinara"
+    group = "ru.otus"
 
     repositories {
         mavenLocal()
