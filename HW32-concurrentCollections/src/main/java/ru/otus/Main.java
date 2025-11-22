@@ -1,7 +1,6 @@
 package ru.otus;
 
 import java.util.concurrent.TimeUnit;
-
 import ru.otus.lib.SensorDataBufferedWriterFake;
 import ru.otus.services.FakeSensorDataGenerator;
 import ru.otus.services.SensorDataProcessingFlowImpl;
