@@ -1,9 +1,5 @@
 package ru.otus;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,8 +7,6 @@ public class MainApp31 {
     private static final Logger logger = LoggerFactory.getLogger(MainApp31.class);
 
     private static final Long DELAY = 1000L;
-
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     private long prev = 0;
     private long next = 0;
@@ -27,32 +21,17 @@ public class MainApp31 {
     }
 
     private void boost() {
-        lock.writeLock().lock();
-        try {
-            this.next += step;
-            logger.info("Boost: {}", next);
+        this.next += step;
+        logger.info("Boost: {}", next);
 
-            if (next == 10L || (next + step) == 0L) {
-                this.step = -step;
-            }
-        } finally {
-            lock.writeLock().unlock();
+        if (next == 10L || (next + step) == 0L) {
+            this.step = -step;
         }
     }
 
     private void sync() {
-        try {
-            if (lock.readLock().tryLock(DELAY, TimeUnit.MILLISECONDS)) {
-                try {
-                    this.prev = next;
-                    logger.info("Sync: {}", prev);
-                } finally {
-                    lock.readLock().unlock();
-                }
-            }
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        this.prev = next;
+        logger.info("Sync: {}", prev);
     }
 
     private void go() {
@@ -60,19 +39,31 @@ public class MainApp31 {
         new Thread(this::two, "thread-2").start();
     }
 
-    private void one() {
+    private synchronized void one() {
         while (!Thread.currentThread().isInterrupted()) {
-            if (isSynchronized()) {
+            try {
+                while (!isSynchronized()) {
+                    this.wait();
+                }
                 boost();
+                sleep();
+                notifyAll();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
-            sleep();
         }
     }
 
-    private void two() {
+    private synchronized void two() {
         while (!Thread.currentThread().isInterrupted()) {
-            if (!isSynchronized()) {
+            try {
+                while (isSynchronized()) {
+                    this.wait();
+                }
                 sync();
+                notifyAll();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
     }
