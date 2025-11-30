@@ -3,6 +3,9 @@ package ru.otus.service;
 import io.grpc.stub.StreamObserver;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +13,8 @@ import ru.otus.protobuf.ScoreMessage;
 
 public class SeqStreamObserver implements StreamObserver<ScoreMessage> {
     private static final Logger log = LoggerFactory.getLogger(SeqStreamObserver.class);
+
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     private long newValue = 0;
     private final CountDownLatch latch;
@@ -19,12 +24,22 @@ public class SeqStreamObserver implements StreamObserver<ScoreMessage> {
     }
 
     public long getNewValue() {
-        return newValue;
+        lock.readLock().lock();
+        try {
+            return newValue;
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     @Override
     public void onNext(ScoreMessage scoreMessage) {
-        this.newValue = scoreMessage.getNextValue();
+        lock.writeLock().lock();
+        try {
+            this.newValue = scoreMessage.getNextValue();
+        } finally {
+            lock.readLock().unlock();
+        }
         log.info("newValue = {}", this.newValue);
     }
 

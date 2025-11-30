@@ -23,8 +23,9 @@ public class StoreServiceImpl implements StoreService {
 
         for (long i = firsValue; i <= lastValue; i++) {
             // currentValue = [currentValue] + [ПОСЛЕДНЕЕ число от сервера] + 1
-            if (newValue < observer.getNewValue()) {
-                newValue = observer.getNewValue();
+            var servedValue = observer.getNewValue();
+            if (newValue < servedValue) {
+                newValue = servedValue;
                 currentValue += newValue + 1;
             } else {
                 currentValue += 1;
