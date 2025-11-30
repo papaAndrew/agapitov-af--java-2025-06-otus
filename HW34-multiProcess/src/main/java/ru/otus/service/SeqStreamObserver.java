@@ -1,12 +1,9 @@
 package ru.otus.service;
 
 import io.grpc.stub.StreamObserver;
-
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.protobuf.ScoreMessage;

@@ -3,6 +3,7 @@ package ru.otus.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("java:S2142")
 public class StoreServiceImpl implements StoreService {
     private static final Logger log = LoggerFactory.getLogger(StoreServiceImpl.class);
 

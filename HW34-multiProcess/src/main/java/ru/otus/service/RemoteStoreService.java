@@ -5,9 +5,10 @@ import ru.otus.protobuf.RangeMessage;
 import ru.otus.protobuf.RemoteServiceGrpc;
 import ru.otus.protobuf.ScoreMessage;
 
-@SuppressWarnings({"java:S2094"})
+@SuppressWarnings("java:S2142")
 public class RemoteStoreService extends RemoteServiceGrpc.RemoteServiceImplBase {
 
+    @Override
     public void genSequence(RangeMessage request, StreamObserver<ScoreMessage> responseObserver) {
 
         for (var val = request.getFirstValue(); val < request.getLastValue(); val++) {
