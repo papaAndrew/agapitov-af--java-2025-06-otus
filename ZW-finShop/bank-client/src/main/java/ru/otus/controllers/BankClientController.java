@@ -79,6 +79,8 @@ public class BankClientController {
     }
 
     private Mono<Long> saveMessage(String roomId, Message message) {
+        //        logger.info("Save Message - {}", roomId);
+        //        return Mono.just(0L);
         checkEnabled(roomId);
         return datastoreClient
                 .post()

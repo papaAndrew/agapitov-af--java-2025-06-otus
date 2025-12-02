@@ -1,4 +1,3 @@
 package ru.otus.domain;
 
-public record Message(String messageStr) {
-}
+public record Message(String messageStr) {}
