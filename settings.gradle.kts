@@ -40,3 +40,5 @@ include("HW31-Executors")
 include("HW32-concurrentCollections")
 include("HW34-multiProcess")
 include("HW38-webflux-chat")
+
+include("ZW-finShop:bank-client")
