@@ -40,9 +40,6 @@ public class BankClientController {
 
         var escapedMessage = new Message(HtmlUtils.htmlEscape(message.messageStr()));
         template.convertAndSend(String.format("%s%s", TOPIC_TEMPLATE, roomId), escapedMessage);
-
-        logger.info("send also roomId:{}", ROOM_1408);
-        template.convertAndSend(String.format("%s%s", TOPIC_TEMPLATE, ROOM_1408), escapedMessage);
     }
 
     @EventListener
@@ -79,15 +76,15 @@ public class BankClientController {
     }
 
     private Mono<Long> saveMessage(String roomId, Message message) {
-        //        logger.info("Save Message - {}", roomId);
-        //        return Mono.just(0L);
-        checkEnabled(roomId);
-        return datastoreClient
-                .post()
-                .uri(String.format("/msg/%s", roomId))
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(message)
-                .exchangeToMono(response -> response.bodyToMono(Long.class));
+        logger.info("Save Message - {}", roomId);
+        return Mono.just(0L);
+        //        checkEnabled(roomId);
+        //        return datastoreClient
+        //                .post()
+        //                .uri(String.format("/msg/%s", roomId))
+        //                .accept(MediaType.APPLICATION_JSON)
+        //                .bodyValue(message)
+        //                .exchangeToMono(response -> response.bodyToMono(Long.class));
     }
 
     private Flux<Message> getMessagesByRoomId(long roomId) {

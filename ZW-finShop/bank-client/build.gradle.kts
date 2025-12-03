@@ -1,6 +1,7 @@
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("com.google.code.findbugs:jsr305")
 
     implementation("org.webjars:webjars-locator-core")
