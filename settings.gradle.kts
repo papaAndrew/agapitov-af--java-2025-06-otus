@@ -46,3 +46,4 @@ findProject(":HW38-webflux-chat:datastore-service")?.name = "datastore-service"
 
 include("ZW-finShop:bank-client")
 include("ZW-finShop:data-center")
+include("ZW-finShop:data-center:GrpcServer")

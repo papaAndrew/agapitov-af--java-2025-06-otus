@@ -111,6 +111,7 @@ allprojects {
             force("org.codehaus.jackson:jackson-core-asl:1.8.8")
             force("org.codehaus.jackson:jackson-mapper-asl:1.8.8")
             force("commons-io:commons-io:2.18.0")
+            force("org.checkerframework:checker-qual:3.48.3")
         }
     }
 }
