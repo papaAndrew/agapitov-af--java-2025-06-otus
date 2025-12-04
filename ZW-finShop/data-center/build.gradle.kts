@@ -3,6 +3,7 @@ import com.google.protobuf.gradle.id
 plugins {
     id("idea")
     id("com.google.protobuf")
+
 }
 
 val errorProneAnnotations: String by project
@@ -20,10 +21,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 
-    runtimeOnly("org.flywaydb:flyway-database-postgresql")
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
-
     implementation("ch.qos.logback:logback-classic")
     implementation("io.grpc:grpc-netty:$grpc")
     implementation("io.grpc:grpc-protobuf:$grpc")
@@ -32,6 +29,9 @@ dependencies {
     implementation("com.google.errorprone:error_prone_annotations:$errorProneAnnotations")
     implementation("org.apache.tomcat:annotations-api:$tomcatAnnotationsApi")
 
+    runtimeOnly("org.flywaydb:flyway-database-postgresql")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 }
 
 val protoSrcDir = "$projectDir/build/generated/sources/proto"

@@ -49,6 +49,10 @@ public class Client implements Persistable<String> {
         return id != null ? String.valueOf(id) : null;
     }
 
+    public Long getClientId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         var delim = "," + '\n';
