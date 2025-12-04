@@ -42,3 +42,4 @@ include("HW34-multiProcess")
 include("HW38-webflux-chat")
 
 include("ZW-finShop:bank-client")
+include("ZW-finShop:data-center")
