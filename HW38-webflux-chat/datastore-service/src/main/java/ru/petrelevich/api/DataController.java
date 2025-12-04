@@ -18,6 +18,9 @@ import ru.petrelevich.service.DataStore;
 @RestController
 public class DataController {
     private static final Logger log = LoggerFactory.getLogger(DataController.class);
+
+    private static final String ROOM_1408 = "1408";
+
     private final DataStore dataStore;
     private final Scheduler workerPool;
 
@@ -51,4 +54,15 @@ public class DataController {
                 .doOnNext(msgDto -> log.info("msgDto:{}", msgDto))
                 .subscribeOn(workerPool);
     }
+
+    @GetMapping(value = "/msg}", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    public Flux<MessageDto> getAllMessages() {
+        return dataStore.loadAllMessages()
+                .map(message -> new MessageDto(message.msgText()))
+                .doOnNext(msgDto -> log.info("msgDto:{}", msgDto))
+                .subscribeOn(workerPool);
+    }
+
+
+
 }

@@ -39,6 +39,7 @@ include("HW28-springDataJdbc")
 include("HW31-Executors")
 include("HW32-concurrentCollections")
 include("HW34-multiProcess")
-include("HW38-webflux-chat")
-
-include("ZW-finShop:bank-client")
+include("HW38-webflux-chat:client-service")
+findProject(":HW38-webflux-chat:client-service")?.name = "client-service"
+include("HW38-webflux-chat:datastore-service")
+findProject(":HW38-webflux-chat:datastore-service")?.name = "datastore-service"

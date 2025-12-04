@@ -1,3 +1,4 @@
 package ru.petrelevich.domain;
 
-public record MessageDto(String messageStr) {}
+public record MessageDto(String messageStr) {
+}
