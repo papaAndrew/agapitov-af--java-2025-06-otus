@@ -36,6 +36,10 @@ public class MessageController {
     public void getMessage(@DestinationVariable("roomId") String roomId, Message message) {
         logger.info("get message:{}, roomId:{}", message, roomId);
 
+        if (ROOM_1408.equals(roomId.trim())) {
+            logger.warn("Room {} is read only", roomId);
+            return;
+        }
         saveMessage(roomId, message).subscribe(msgId -> logger.info("message send id:{}", msgId));
 
         var escapedMessage = new Message(HtmlUtils.htmlEscape(message.messageStr()));
@@ -79,7 +83,6 @@ public class MessageController {
     }
 
     private Mono<Long> saveMessage(String roomId, Message message) {
-        checkEnabled(roomId);
         return datastoreClient
                 .post()
                 .uri(String.format("/msg/%s", roomId))
@@ -89,9 +92,10 @@ public class MessageController {
     }
 
     private Flux<Message> getMessagesByRoomId(long roomId) {
+        var uri = roomId == 1408 ? "/msg" : String.format("/msg/%s", roomId);
         return datastoreClient
                 .get()
-                .uri(String.format("/msg/%s", roomId))
+                .uri(uri)
                 .accept(MediaType.APPLICATION_NDJSON)
                 .exchangeToFlux(response -> {
                     if (response.statusCode().equals(HttpStatus.OK)) {
@@ -100,12 +104,5 @@ public class MessageController {
                         return response.createException().flatMapMany(Mono::error);
                     }
                 });
-    }
-
-    private void checkEnabled(String roomId) {
-        if (ROOM_1408.equals(roomId.trim())) {
-            logger.error("Room {} is read only", roomId);
-            throw new ChatException("Cannot send messages to this room");
-        }
     }
 }
