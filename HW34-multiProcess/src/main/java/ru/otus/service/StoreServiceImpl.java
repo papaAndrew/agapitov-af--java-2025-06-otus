@@ -1,5 +1,6 @@
 package ru.otus.service;
 
+import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,15 +8,15 @@ import org.slf4j.LoggerFactory;
 public class StoreServiceImpl implements StoreService {
     private static final Logger log = LoggerFactory.getLogger(StoreServiceImpl.class);
 
-    long newValue;
+    AtomicLong newValue;
     long currentValue;
 
     private final SeqStreamObserver observer;
 
     public StoreServiceImpl(SeqStreamObserver observer) {
         this.observer = observer;
-        this.newValue = observer.getNewValue();
-        this.currentValue = newValue;
+        this.newValue = new AtomicLong(observer.getNewValue());
+        this.currentValue = newValue.longValue();
     }
 
     @Override
@@ -25,9 +26,9 @@ public class StoreServiceImpl implements StoreService {
         for (long i = firsValue; i <= lastValue; i++) {
             // currentValue = [currentValue] + [ПОСЛЕДНЕЕ число от сервера] + 1
             var servedValue = observer.getNewValue();
-            if (newValue < servedValue) {
-                newValue = servedValue;
-                currentValue += newValue + 1;
+            if (newValue.longValue() < servedValue) {
+                newValue.set(servedValue);
+                currentValue += newValue.getAndSet(0) + 1;
             } else {
                 currentValue += 1;
             }
