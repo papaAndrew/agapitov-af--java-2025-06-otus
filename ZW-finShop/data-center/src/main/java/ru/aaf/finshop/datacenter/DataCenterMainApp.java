@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SuppressWarnings({"java:S1068", "java:S1854", "java:S125", "java:S1481"})
 @SpringBootApplication
 public class DataCenterMainApp {
-    public static final int SERVER_PORT = 8190;
     private static final Logger log = LoggerFactory.getLogger(DataCenterMainApp.class);
 
     public static void main(String[] args) {

@@ -2,14 +2,16 @@ package ru.aaf.finshop.datacenter.service;
 
 import io.grpc.stub.StreamObserver;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 import ru.aaf.finshop.datacenter.model.Client;
 import ru.aaf.finshop.datacenter.model.Profile;
-import ru.aaf.finshop.datacenter.proto.ClientProto;
-import ru.aaf.finshop.datacenter.proto.Principal;
-import ru.aaf.finshop.datacenter.proto.ProfileProto;
-import ru.aaf.finshop.datacenter.proto.RemoteServiceGrpc;
+import ru.aaf.finshop.proto.ClientProto;
+import ru.aaf.finshop.proto.Principal;
+import ru.aaf.finshop.proto.ProfileProto;
+import ru.aaf.finshop.proto.RemoteServiceGrpc;
 
 @SuppressWarnings("java:S2094")
+@Service
 public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
 
     private final DataService dataService;

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package ru.aaf.finshop.datacenter.proto;
+package ru.aaf.finshop.proto;
 
 option java_multiple_files = true;
 

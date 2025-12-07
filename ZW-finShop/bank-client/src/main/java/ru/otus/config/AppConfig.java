@@ -1,6 +1,8 @@
 package ru.otus.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.netty.channel.nio.NioEventLoopGroup;
 import jakarta.annotation.Nullable;
 import java.util.concurrent.ThreadFactory;
@@ -10,15 +12,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ReactorResourceFactory;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class AppConfig {
     private static final int THREAD_POOL_SIZE = 2;
 
     @Bean
-    public WebClient datastoreClient(WebClient.Builder builder, @Value("${datastore.url}") String url) {
-        return builder.baseUrl(url).build();
+    public ManagedChannel dataCenterClient(@Value("${datacenter.url}") String url) {
+        return ManagedChannelBuilder.forTarget(url).usePlaintext().build();
     }
 
     @Bean
