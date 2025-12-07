@@ -12,22 +12,23 @@ val grpc: String by project
 val grpcProtobuf: String by project
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation ("com.google.code.findbugs:jsr305")
+    implementation("ch.qos.logback:logback-classic")
+    implementation("org.apache.tomcat:annotations-api:${tomcatAnnotationsApi}")
 
     implementation("io.r2dbc:r2dbc-postgresql")
     implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
+
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
 
-    implementation("ch.qos.logback:logback-classic")
+    implementation ("com.google.code.findbugs:jsr305")
+    implementation("com.google.protobuf:protobuf-java:${grpcProtobuf}")
+    implementation("com.google.errorprone:error_prone_annotations:${errorProneAnnotations}")
     implementation("io.grpc:grpc-netty:$grpc")
     implementation("io.grpc:grpc-protobuf:$grpc")
     implementation("io.grpc:grpc-stub:$grpc")
-    implementation("com.google.protobuf:protobuf-java:$grpcProtobuf")
-    implementation("com.google.errorprone:error_prone_annotations:$errorProneAnnotations")
-    implementation("org.apache.tomcat:annotations-api:$tomcatAnnotationsApi")
 
     runtimeOnly("org.flywaydb:flyway-database-postgresql")
     compileOnly("org.projectlombok:lombok")

@@ -1,6 +1,7 @@
 package ru.aaf.finshop.datacenter.service;
 
 import io.grpc.stub.StreamObserver;
+import java.util.Optional;
 import ru.aaf.finshop.datacenter.model.Client;
 import ru.aaf.finshop.datacenter.model.Profile;
 import ru.aaf.finshop.datacenter.proto.ClientProto;
@@ -32,10 +33,11 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
         responseObserver.onCompleted();
     }
 
-    private ProfileProto mapProfile(Profile profile) {
-        if (profile == null) {
+    private ProfileProto mapProfile(Optional<Profile> optionalProfile) {
+        if (optionalProfile.isEmpty()) {
             return null;
         }
+        var profile = optionalProfile.get();
         return ProfileProto.newBuilder()
                 .setId(profile.id())
                 .setClientId(profile.clientId())
