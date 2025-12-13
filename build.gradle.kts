@@ -55,6 +55,7 @@ allprojects {
     val grpc: String by project
     val wiremock: String by project
     val r2dbcPostgresql: String by project
+    val springDataBom: String by project
 
     apply(plugin = "io.spring.dependency-management")
     dependencyManagement {
@@ -63,6 +64,7 @@ allprojects {
                 mavenBom(BOM_COORDINATES)
                 mavenBom("org.testcontainers:testcontainers-bom:$testcontainersBom")
                 mavenBom("com.google.protobuf:protobuf-bom:$protobufBom")
+                mavenBom("org.springframework.data:spring-data-bom:$springDataBom")
             }
             dependency("com.google.guava:guava:$guava")
             dependency("org.openjdk.jmh:jmh-core:$jmh")

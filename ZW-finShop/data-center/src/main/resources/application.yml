@@ -1,0 +1,22 @@
+server:
+  port: 8081
+grpc:
+  server:
+    port: 8190
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5430/demoDB
+    username: usr
+    password: pwd
+  datasource:
+    url: jdbc:postgresql://localhost:5430/demoDB
+    username: usr
+    password: pwd
+
+
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: TRACE
