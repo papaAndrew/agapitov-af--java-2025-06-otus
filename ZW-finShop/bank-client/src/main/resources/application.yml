@@ -2,4 +2,4 @@ server:
   port: 8020
 
 datacenter:
-  url: localhost:8021
+  url: localhost:8190

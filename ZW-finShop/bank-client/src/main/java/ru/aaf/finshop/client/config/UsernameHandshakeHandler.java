@@ -1,4 +1,4 @@
-package ru.otus.config;
+package ru.aaf.finshop.client.config;
 
 import java.security.Principal;
 import java.util.Map;

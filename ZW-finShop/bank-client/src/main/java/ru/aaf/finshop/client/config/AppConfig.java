@@ -1,4 +1,4 @@
-package ru.otus.config;
+package ru.aaf.finshop.client.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.grpc.ManagedChannel;

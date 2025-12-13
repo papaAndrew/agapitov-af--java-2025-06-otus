@@ -1,4 +1,4 @@
-package ru.otus.config;
+package ru.aaf.finshop.client.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

@@ -1,4 +1,4 @@
-package ru.otus;
+package ru.aaf.finshop.client;
 
 public class SomethingWrongException extends RuntimeException {
     public SomethingWrongException(String message) {

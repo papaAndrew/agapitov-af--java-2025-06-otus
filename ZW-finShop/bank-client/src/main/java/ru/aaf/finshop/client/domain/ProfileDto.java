@@ -1,4 +1,4 @@
-package ru.otus.domain;
+package ru.aaf.finshop.client.domain;
 
 import jakarta.annotation.Nonnull;
 

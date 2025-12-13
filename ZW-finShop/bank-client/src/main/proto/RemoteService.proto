@@ -7,7 +7,7 @@ option java_multiple_files = true;
 message ProfileProto {
     int64 id = 1;
     int64 clientId = 2;
-    string credential = 3;
+    bool authorized = 3;
 }
 
 message ClientProto {
