@@ -20,10 +20,10 @@ dependencies {
     implementation("io.r2dbc:r2dbc-postgresql")
     implementation("org.postgresql:postgresql")
 
+
     implementation("net.devh:grpc-server-spring-boot-starter:3.1.0.RELEASE")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 
     implementation("com.google.code.findbugs:jsr305")

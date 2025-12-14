@@ -1,6 +1,8 @@
 package ru.aaf.finshop.datacenter.service;
 
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.aaf.finshop.datacenter.model.Client;
 import ru.aaf.finshop.datacenter.model.Profile;
@@ -11,6 +13,7 @@ import ru.aaf.finshop.datacenter.sessionmanager.TransactionManager;
 @Service
 public class DataServiceImpl implements DataService {
 
+    private static final Logger log = LoggerFactory.getLogger(DataServiceImpl.class);
     //    private final ClientRepository clientRepository;
     private final ProfileRepository profileRepository;
     private final TransactionManager transactionManager;
@@ -22,7 +25,9 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public Optional<Profile> getProfileByCredential(String credential) {
-        return profileRepository.findByName(credential);
+        log.info("getProfileByCredential: {}", credential);
+        var profileFlux = profileRepository.findByName(credential);
+        return profileFlux.next().blockOptional();
     }
 
     @Override

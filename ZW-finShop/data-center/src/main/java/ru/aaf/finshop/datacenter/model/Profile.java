@@ -8,7 +8,7 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
-@Table("client_profile")
+@Table("profile")
 public class Profile implements Persistable<String> {
 
     @Id

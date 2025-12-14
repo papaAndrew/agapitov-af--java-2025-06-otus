@@ -1,9 +1,9 @@
 package ru.aaf.finshop.datacenter.repository;
 
-import java.util.Optional;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Flux;
 import ru.aaf.finshop.datacenter.model.Profile;
 
 public interface ProfileRepository extends ReactiveCrudRepository<Profile, Long> {
-    Optional<Profile> findByName(String name);
+    Flux<Profile> findByName(String name);
 }

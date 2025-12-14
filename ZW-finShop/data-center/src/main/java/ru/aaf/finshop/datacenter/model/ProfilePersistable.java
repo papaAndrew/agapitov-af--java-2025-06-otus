@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("client_profile")
+@Table("profile")
 @Getter
 public class ProfilePersistable implements Persistable<String> {
 

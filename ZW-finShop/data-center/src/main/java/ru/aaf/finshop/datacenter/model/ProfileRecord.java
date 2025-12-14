@@ -2,7 +2,7 @@ package ru.aaf.finshop.datacenter.model;
 
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("client_profile")
+@Table("profile")
 public record ProfileRecord(Long id, String name, Long clientId) {
 
     @Override
