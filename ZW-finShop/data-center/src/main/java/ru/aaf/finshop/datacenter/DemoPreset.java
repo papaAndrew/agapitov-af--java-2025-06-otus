@@ -23,11 +23,13 @@ public class DemoPreset implements CommandLineRunner {
     }
 
     private void findOrCreateProfile(String name) {
-        if (dataService.getProfileByCredential(name).isEmpty()) {
+        var foundProfile = dataService.getProfileByCredential(name).blockOptional();
+        if (foundProfile.isEmpty()) {
             log.info("Create new Profile: {}", name);
-            dataService.saveProfile(new Profile(null, name, null, true));
+            var createdProfile = dataService.saveProfile(new Profile(null, name, null, true));
+            log.info("createdProfile: {}", createdProfile.block());
         } else {
-            log.info("Profile already exists: {}", name);
+            log.info("Profile already exists: {}", foundProfile.get());
         }
     }
 }

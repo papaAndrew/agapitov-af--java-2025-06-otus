@@ -25,16 +25,17 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
     @Override
     public void getProfileByPrincipal(Principal request, StreamObserver<ProfileProto> responseObserver) {
         log.info("getProfileByPrincipal: {}", request);
-        var optionalProfile = dataService.getProfileByCredential(request.getLogin());
-        responseObserver.onNext(mapProfile(optionalProfile.orElse(null)));
+        var monoProfile = dataService.getProfileByCredential(request.getLogin());
+        monoProfile.log();
+        responseObserver.onNext(mapProfile(monoProfile.blockOptional().orElse(null)));
         responseObserver.onCompleted();
     }
 
     @Override
     public void getClientByProfile(ProfileProto request, StreamObserver<ClientProto> responseObserver) {
 
-        var client = dataService.getClientByProfileId(request.getId());
-        responseObserver.onNext(mapClient(client));
+        var monoClient = dataService.getClientByProfileId(request.getId());
+        responseObserver.onNext(mapClient(monoClient.blockOptional().orElse(null)));
         responseObserver.onCompleted();
     }
 
@@ -42,9 +43,10 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
         if (profile == null) {
             return ProfileProto.newBuilder().setAuthorized(false).build();
         }
+
         return ProfileProto.newBuilder()
                 .setId(profile.getProfileId())
-                .setClientId(profile.getClientId())
+                .setClientId(profile.getClientId() == null ? 0 : profile.getClientId())
                 .setAuthorized(true)
                 .build();
     }

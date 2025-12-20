@@ -1,14 +1,14 @@
 package ru.aaf.finshop.datacenter.service;
 
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 import ru.aaf.finshop.datacenter.model.Client;
 import ru.aaf.finshop.datacenter.model.Profile;
 
 public interface DataService {
 
-    Optional<Profile> getProfileByCredential(String name);
+    Mono<Profile> getProfileByCredential(String name);
 
-    Client getClientByProfileId(Long profileId);
+    Mono<Client> getClientByProfileId(Long profileId);
 
-    void saveProfile(Profile profile);
+    Mono<Profile> saveProfile(Profile profile);
 }

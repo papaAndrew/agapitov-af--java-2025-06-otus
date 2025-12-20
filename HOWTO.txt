@@ -1,0 +1,6 @@
+1. Connect demoDB
+`docker exec -it pg-docker psql -U usr -d demoDB`
+
+```
+select * from profile;
+```

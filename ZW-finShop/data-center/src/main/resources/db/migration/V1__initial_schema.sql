@@ -8,8 +8,8 @@ create table client
 create table profile
 (
     id          bigserial   not null    primary key,
-    client_id   bigint      not null    references client (id),
-    name        varchar(32) not null
+    name        varchar(32) not null,
+    client_id   bigint                  references client (id)
 );
 create unique index idx_profile_name on profile (name);
 
