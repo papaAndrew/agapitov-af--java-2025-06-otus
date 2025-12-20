@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Заявка на кредит</title>
+    <script src="/app.js"></script>
     <style>
         * {
             margin: 0;
@@ -79,35 +80,43 @@
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container" th:object="${clientView}" >
     <h1>Заявка на кредит</h1>
 
-    <!-- Нередактируемые поля -->
-    <div class="info-row">
-        <span class="info-label">User ID:</span>
-        <span class="info-value" id="userId">123456789</span>
-    </div>
-    <div class="info-row">
-        <span class="info-label">Статус:</span>
-        <span class="info-value" id="status">Активный</span>
-    </div>
+    <!-- Client -->
+    <form id="client-info" th:action="@{/client/save}" th:method="post" accept-charset="utf-8">
 
-    <!-- Форма подачи заявки -->
-    <form id="credit-claim" th:action="@{/claim/submit}" th:object="${clientView}" th:method="post" accept-charset="utf-8">
+        <div class="info-row">
+            <span class="info-label">ID:</span>
+            <span class="info-value" id="clientId" th:value="*{clientId}">Заполните личные данные</span>>
+        </div>
+
         <label for="name">Имя</label>
         <input type="text" id="name" name="name" th:value="*{name}" required>
 
         <label for="passport">Паспорт</label>
-        <input type="text" id="passport" name="passport" th:value="*{passport}" required>
+        <input type="text" id="passport" name="passport" th:value="*{passport}">
 
         <label for="income">Доход</label>
-        <input type="number" id="income" name="income" th:value="*{income}" required>
+        <input type="number" id="income" name="income" th:value="*{income}">
 
+        <button type="submit">Сохранить</button>
+<!--        <button id="saveClient" onclick="saveClient()"> Сохранить</button>-->
+    </form>
+    <!-- Client -->
+    <form id="credit-claim" th:action="@{/claim/submit}" th:method="post" accept-charset="utf-8">
         <label for="amount">Запрашиваемая сумма</label>
-        <input type="number" id="amount" name="amount" th:value="*{amount}" required>
+        <input type="number" id="amount" name="amount">
+
+        <div class="info-row">
+            <span class="info-label">Статус:</span>
+            <span class="info-value" id="status">Новый</span>
+        </div>
 
         <button type="submit">Отправить</button>
+
     </form>
+
 </div>
 </body>
 </html>

@@ -13,8 +13,8 @@ create table profile
 );
 create unique index idx_profile_name on profile (name);
 
-alter table client
-    add column profile_id  bigint      references profile (id);
+--alter table client
+--    add column profile_id  bigint      references profile (id);
 
 create table passport
 (
@@ -36,9 +36,9 @@ alter table passport
     add constraint fk_passport_client
     foreign key (client_id) references client (id);
 
-alter table client
-    add constraint fk_client_profile
-    foreign key (profile_id) references profile (id);
+--alter table client
+--    add constraint fk_client_profile
+--    foreign key (profile_id) references profile (id);
 
 alter table client
     add constraint fk_client_passport

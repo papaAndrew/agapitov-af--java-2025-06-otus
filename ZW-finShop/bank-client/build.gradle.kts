@@ -29,6 +29,9 @@ dependencies {
     implementation("org.webjars:sockjs-client")
     implementation("org.webjars:stomp-websocket")
     implementation("org.webjars:bootstrap")
+
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 }
 
 idea {

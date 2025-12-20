@@ -8,7 +8,11 @@ public interface DataService {
 
     Mono<Profile> getProfileByCredential(String name);
 
-    Mono<Client> getClientByProfileId(Long profileId);
+    Mono<Client> getClientById(Long clientId);
 
     Mono<Profile> saveProfile(Profile profile);
+
+    Mono<Client> saveClient(Client client);
+
+    void updateProfileByClient(Long profileId, Long clientId);
 }

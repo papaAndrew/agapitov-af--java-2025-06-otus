@@ -8,6 +8,7 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
+@SuppressWarnings("java:S125")
 @Table("client")
 @Getter
 public class Client implements Persistable<String> {
@@ -20,23 +21,23 @@ public class Client implements Persistable<String> {
     @MappedCollection(idColumn = "client_id")
     private final Passport passport;
 
-    @MappedCollection(idColumn = "client_id")
-    private final Profile profile;
+    //    @MappedCollection(idColumn = "client_id")
+    //    private final Profile profile;
 
     @Transient
     private final boolean isNew;
 
-    public Client(Long id, String name, Passport passport, Profile profile, boolean isNew) {
+    public Client(Long id, String name, Passport passport, boolean isNew) {
         this.id = id;
         this.name = name;
         this.passport = passport;
-        this.profile = profile;
+        //        this.profile = profile;
         this.isNew = isNew;
     }
 
     @PersistenceCreator
-    private Client(Long id, String name, Passport passport, Profile profile) {
-        this(id, name, passport, profile, false);
+    private Client(Long id, String name, Passport passport) {
+        this(id, name, passport, false);
     }
 
     @Override
@@ -58,8 +59,6 @@ public class Client implements Persistable<String> {
         var delim = "," + '\n';
         return "Client{id=" + id + delim + "    name='" + name + '\'' + delim
                 + "    passport=" + passport + delim
-                + "    profile=" + profile
-                + delim
-                + '}';
+                + "    isNew=" + isNew + '}';
     }
 }
