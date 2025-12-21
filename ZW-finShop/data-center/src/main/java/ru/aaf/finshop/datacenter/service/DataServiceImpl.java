@@ -7,6 +7,7 @@ import reactor.core.publisher.Mono;
 import ru.aaf.finshop.datacenter.model.Client;
 import ru.aaf.finshop.datacenter.model.Profile;
 import ru.aaf.finshop.datacenter.repository.ClientRepository;
+// import ru.aaf.finshop.datacenter.repository.CustomProfileRepository;
 import ru.aaf.finshop.datacenter.repository.ProfileRepository;
 
 @SuppressWarnings({"java:S1068", "java:S125"})
@@ -16,16 +17,19 @@ public class DataServiceImpl implements DataService {
     private static final Logger log = LoggerFactory.getLogger(DataServiceImpl.class);
     private final ClientRepository clientRepository;
     private final ProfileRepository profileRepository;
+    //    private final CustomProfileRepository customProfileRepository;
 
     public DataServiceImpl(ClientRepository clientRepository, ProfileRepository profileRepository) {
+        //            CustomProfileRepository customProfileRepository) {
         this.clientRepository = clientRepository;
         this.profileRepository = profileRepository;
+        //        this.customProfileRepository = customProfileRepository;
     }
 
     @Override
-    public Mono<Profile> getProfileByCredential(String credential) {
-        log.info("getProfileByCredential: {}", credential);
-        var profileFlux = profileRepository.findByName(credential);
+    public Mono<Profile> getProfileByName(String profileName) {
+        log.info("getProfileByCredential: {}", profileName);
+        var profileFlux = profileRepository.findByName(profileName);
         log.info("profileFlux: {}", profileFlux);
         return profileFlux.next();
     }
@@ -49,7 +53,9 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public void updateProfileByClient(Long profileId, Long clientId) {
-        profileRepository.updateClientId(profileId, clientId);
+    public Mono<Void> updateProfileByClient(Long profileId, Long clientId) {
+        log.info("updateProfileByClient (clientId): {}({})", profileId, clientId);
+
+        return profileRepository.updateProfileClientId(profileId, clientId);
     }
 }

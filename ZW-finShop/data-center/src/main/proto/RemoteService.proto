@@ -16,8 +16,8 @@ message ClientProto {
     optional string passport = 4;
 }
 
-message PrincipalProto {
-    string login = 1;
+message NameProto {
+    string name = 1;
 }
 
 message IdProto {
@@ -27,7 +27,7 @@ message IdProto {
 message EmptyProto {}
 
 service RemoteService {
-  rpc getProfileByPrincipal(PrincipalProto) returns (ProfileProto);
+  rpc getProfileByName(NameProto) returns (ProfileProto);
   rpc getClientById(IdProto) returns (ClientProto);
   rpc saveClient(ClientProto) returns (ClientProto);
 }

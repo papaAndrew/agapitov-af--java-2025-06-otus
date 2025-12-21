@@ -1,6 +1,7 @@
 package ru.aaf.finshop.datacenter.service;
 
 import io.grpc.stub.StreamObserver;
+import java.util.Objects;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +21,9 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
     }
 
     @Override
-    public void getProfileByPrincipal(PrincipalProto request, StreamObserver<ProfileProto> responseObserver) {
+    public void getProfileByName(NameProto request, StreamObserver<ProfileProto> responseObserver) {
         log.info("getProfileByPrincipal: {}", request);
-        var monoProfile = dataService.getProfileByCredential(request.getLogin());
+        var monoProfile = dataService.getProfileByName(request.getName());
         responseObserver.onNext(mapProfile(monoProfile.blockOptional().orElse(null)));
         responseObserver.onCompleted();
     }
@@ -43,7 +44,7 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
         var monoClient =
                 dataService.saveClient(new Client(isNew ? null : request.getId(), request.getName(), null, isNew));
         var client = monoClient.blockOptional().orElse(null);
-        if (isNew && client != null) {
+        if (isNew && (client != null)) {
             dataService.updateProfileByClient(request.getProfileId(), client.getClientId());
         }
         responseObserver.onNext(mapClient(client));
@@ -69,8 +70,7 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
         return ClientProto.newBuilder()
                 .setId(client.getClientId())
                 .setName(client.getName())
-                .setPassport(
-                        client.getPassport() == null ? "" : client.getPassport().serialNumber())
+                .setPassport(Objects.requireNonNullElse(client.getPassport(), ""))
                 .build();
     }
 }

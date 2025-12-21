@@ -19,7 +19,7 @@ public class Client implements Persistable<String> {
     private final String name;
 
     @MappedCollection(idColumn = "client_id")
-    private final Passport passport;
+    private final String passport;
 
     //    @MappedCollection(idColumn = "client_id")
     //    private final Profile profile;
@@ -27,7 +27,7 @@ public class Client implements Persistable<String> {
     @Transient
     private final boolean isNew;
 
-    public Client(Long id, String name, Passport passport, boolean isNew) {
+    public Client(Long id, String name, String passport, boolean isNew) {
         this.id = id;
         this.name = name;
         this.passport = passport;
@@ -36,7 +36,7 @@ public class Client implements Persistable<String> {
     }
 
     @PersistenceCreator
-    private Client(Long id, String name, Passport passport) {
+    private Client(Long id, String name, String passport) {
         this(id, name, passport, false);
     }
 
@@ -56,8 +56,8 @@ public class Client implements Persistable<String> {
 
     @Override
     public String toString() {
-        var delim = "," + '\n';
-        return "Client{id=" + id + delim + "    name='" + name + '\'' + delim
+        var delim = ",\n";
+        return "Class Client{id=" + id + delim + "    name='" + name + '\'' + delim
                 + "    passport=" + passport + delim
                 + "    isNew=" + isNew + '}';
     }

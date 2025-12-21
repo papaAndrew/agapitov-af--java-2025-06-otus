@@ -47,6 +47,8 @@ public class Profile implements Persistable<String> {
         return id;
     }
 
+    public void updateName(Long clientId) {}
+
     @Override
     public String toString() {
         return "Profile{id=" + id + ";\nname=\"" + name + "\";\nclientId:" + clientId + "\n}'";

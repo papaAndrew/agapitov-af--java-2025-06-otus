@@ -1,4 +1,4 @@
-package ru.aaf.finshop.client.controllers.controllers;
+package ru.aaf.finshop.client.controllers;
 
 import io.grpc.ManagedChannel;
 import org.slf4j.Logger;
@@ -11,10 +11,10 @@ import ru.aaf.finshop.client.SomethingWrongException;
 import ru.aaf.finshop.client.domain.ClientView;
 import ru.aaf.finshop.proto.ClientProto;
 import ru.aaf.finshop.proto.IdProto;
-import ru.aaf.finshop.proto.PrincipalProto;
+import ru.aaf.finshop.proto.NameProto;
 import ru.aaf.finshop.proto.RemoteServiceGrpc;
 
-@SuppressWarnings("java:S125")
+@SuppressWarnings({"java:S125", "java:S1172"})
 @Controller
 public class BankClientController {
     private static final Logger logger = LoggerFactory.getLogger(BankClientController.class);
@@ -39,9 +39,8 @@ public class BankClientController {
         logger.info("Somebody requests POST Login");
 
         var stub = RemoteServiceGrpc.newBlockingStub(channel);
-        var principal = PrincipalProto.newBuilder().setLogin(username).build();
-        var response = stub.getProfileByPrincipal(principal);
-        //        var clientId = new ProfileDto(response.getId(), response.getClientId(), null);
+        var profileName = NameProto.newBuilder().setName(username).build();
+        var response = stub.getProfileByName(profileName);
         logger.info("response.authorized: {}", response.getAuthorized());
         if (!response.getAuthorized()) {
             throw new SomethingWrongException("Profile not found");
@@ -77,14 +76,16 @@ public class BankClientController {
 
     @PostMapping("/client/save")
     public RedirectView saveClient(
+            @RequestParam(value = "profileId", required = true) String profileId,
             @RequestParam(value = "name", required = true) String clientName,
             @RequestParam(value = "passport", required = false) String passport,
             @RequestParam(value = "income", required = false) String income,
             @RequestParam(value = "clientId", required = false) String clientId,
             Model model) {
-        logger.info("saveClient: {}", clientName);
+        logger.info("saveClient (profoleId): {} ([])", clientName, profileId);
 
         var clientProto = ClientProto.newBuilder()
+                .setProfileId(Long.parseLong(profileId))
                 .setId(clientId == null ? 0 : Long.parseLong(clientId))
                 .setName(clientName)
                 .setPassport(passport)

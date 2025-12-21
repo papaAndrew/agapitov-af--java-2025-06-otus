@@ -1,4 +1,4 @@
-package ru.aaf.finshop.client.controllers.controllers;
+package ru.aaf.finshop.client.controllers;
 
 public class ChatException extends RuntimeException {
     public ChatException(String message) {

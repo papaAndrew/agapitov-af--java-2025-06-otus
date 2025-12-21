@@ -6,7 +6,7 @@ import ru.aaf.finshop.datacenter.model.Profile;
 
 public interface DataService {
 
-    Mono<Profile> getProfileByCredential(String name);
+    Mono<Profile> getProfileByName(String name);
 
     Mono<Client> getClientById(Long clientId);
 
@@ -14,5 +14,5 @@ public interface DataService {
 
     Mono<Client> saveClient(Client client);
 
-    void updateProfileByClient(Long profileId, Long clientId);
+    Mono<Void> updateProfileByClient(Long profileId, Long clientId);
 }

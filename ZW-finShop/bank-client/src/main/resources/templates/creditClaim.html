@@ -87,8 +87,12 @@
     <form id="client-info" th:action="@{/client/save}" th:method="post" accept-charset="utf-8">
 
         <div class="info-row">
+            <span class="info-label">Profile ID:</span>
+            <span class="info-value" id="profileId" th:value="*{profileId}">
+        </div>
+        <div class="info-row">
             <span class="info-label">ID:</span>
-            <span class="info-value" id="clientId" th:value="*{clientId}">Заполните личные данные</span>>
+            <span class="info-value" id="clientId" th:value="*{clientId}">Заполните личные данные</span>
         </div>
 
         <label for="name">Имя</label>
