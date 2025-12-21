@@ -1,10 +1,10 @@
 package ru.aaf.finshop.datacenter.service;
 
 import io.grpc.stub.StreamObserver;
-import java.util.Objects;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Mono;
 import ru.aaf.finshop.datacenter.model.Client;
 import ru.aaf.finshop.datacenter.model.Profile;
 import ru.aaf.finshop.proto.*;
@@ -21,56 +21,51 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
     }
 
     @Override
-    public void getProfileByName(NameProto request, StreamObserver<ProfileProto> responseObserver) {
+    public void getProfileByName(NameProto request, StreamObserver<IdProto> responseObserver) {
         log.info("getProfileByPrincipal: {}", request);
         var monoProfile = dataService.getProfileByName(request.getName());
-        responseObserver.onNext(mapProfile(monoProfile.blockOptional().orElse(null)));
+        responseObserver.onNext(mapProfile(monoProfile));
         responseObserver.onCompleted();
     }
 
     @Override
-    public void getClientById(IdProto request, StreamObserver<ClientProto> responseObserver) {
-        log.info("getClientById: {}", request.getId());
-        var monoClient = dataService.getClientById(request.getId());
-        responseObserver.onNext(mapClient(monoClient.blockOptional().orElse(null)));
-        responseObserver.onCompleted();
-    }
-
-    @Override
-    public void saveClient(ClientProto request, StreamObserver<ClientProto> responseObserver) {
+    public void saveProfile(ProfileProto request, StreamObserver<ProfileProto> responseObserver) {
         log.info("saveClient: {}", request);
-        var isNew = request.getId() == 0;
+        var isNew = !request.getAuthorized();
+        var monoProfile = dataService.saveProfile(mapProfile(request));
         log.info("clientId (isNew): {}({})", request.getId(), isNew);
-        var monoClient =
-                dataService.saveClient(new Client(isNew ? null : request.getId(), request.getName(), null, isNew));
-        var client = monoClient.blockOptional().orElse(null);
-        if (isNew && (client != null)) {
-            dataService.updateProfileByClient(request.getProfileId(), client.getClientId());
-        }
-        responseObserver.onNext(mapClient(client));
+        responseObserver.onNext(mapProfile(monoProfile));
         responseObserver.onCompleted();
     }
 
-    private ProfileProto mapProfile(Profile profile) {
-        if (profile == null) {
+    private ProfileProto mapProfile(Mono<Profile> monoProfile) {
+        var optionalProfile = monoProfile.blockOptional();
+        if (optionalProfile.isEmpty()) {
             return ProfileProto.newBuilder().setAuthorized(false).build();
         }
-
+        var profile = optionalProfile.get();
         return ProfileProto.newBuilder()
                 .setId(profile.getProfileId())
-                .setClientId(profile.getClientId() == null ? 0 : profile.getClientId())
+                .setClient(mapClient(profile.getClient()))
                 .setAuthorized(true)
                 .build();
     }
 
-    private ClientProto mapClient(Client client) {
-        if (client == null) {
-            return null;
-        }
-        return ClientProto.newBuilder()
-                .setId(client.getClientId())
-                .setName(client.getName())
-                .setPassport(Objects.requireNonNullElse(client.getPassport(), ""))
+    private ProfileProto.Client mapClient(Client clientProto) {
+        return ProfileProto.Client.newBuilder()
+                .setId(clientProto.getClientId())
+                .setName(clientProto.getName())
+                .setPassport(clientProto.getPassport())
                 .build();
+    }
+
+    private Profile mapProfile(ProfileProto profile) {
+        var isNew = profile.getId() == 0;
+        return new Profile(isNew ? null : profile.getId(), profile.getName(), mapClient(profile.getClient()), isNew);
+    }
+
+    private Client mapClient(ProfileProto.Client clientProto) {
+        var isNew = clientProto.getId() == 0;
+        return new Client(isNew ? null : clientProto.getId(), clientProto.getName(), clientProto.getPassport(), isNew);
     }
 }

@@ -16,21 +16,21 @@ public class Profile implements Persistable<String> {
 
     private String name;
 
-    private Long clientId;
+    private Client client;
 
     @Transient
     private final boolean isNew;
 
-    public Profile(Long id, String name, Long clientId, boolean isNew) {
+    public Profile(Long id, String name, Client client, boolean isNew) {
         this.id = id;
         this.name = name;
-        this.clientId = clientId;
+        this.client = client;
         this.isNew = isNew;
     }
 
     @PersistenceCreator
-    private Profile(Long id, String name, Long clientId) {
-        this(id, name, clientId, false);
+    private Profile(Long id, String name, Client client) {
+        this(id, name, client, false);
     }
 
     @Override
@@ -47,10 +47,8 @@ public class Profile implements Persistable<String> {
         return id;
     }
 
-    public void updateName(Long clientId) {}
-
     @Override
     public String toString() {
-        return "Profile{id=" + id + ";\nname=\"" + name + "\";\nclientId:" + clientId + "\n}'";
+        return "Profile{id=" + id + ";\nname=\"" + name + "\";\nclient:" + client + "\n}'";
     }
 }

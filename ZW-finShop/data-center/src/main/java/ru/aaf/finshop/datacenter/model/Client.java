@@ -31,7 +31,6 @@ public class Client implements Persistable<String> {
         this.id = id;
         this.name = name;
         this.passport = passport;
-        //        this.profile = profile;
         this.isNew = isNew;
     }
 

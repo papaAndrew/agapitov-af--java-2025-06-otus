@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.aaf.finshop.client.SomethingWrongException;
 import ru.aaf.finshop.client.domain.ClientView;
-import ru.aaf.finshop.proto.ClientProto;
 import ru.aaf.finshop.proto.IdProto;
 import ru.aaf.finshop.proto.NameProto;
+import ru.aaf.finshop.proto.ProfileProto;
 import ru.aaf.finshop.proto.RemoteServiceGrpc;
 
 @SuppressWarnings({"java:S125", "java:S1172"})
@@ -34,42 +34,31 @@ public class BankClientController {
     }
 
     @PostMapping("/login")
-    public RedirectView loginPost(
-            @RequestParam("username") String username, @RequestParam("password") String password, Model model) {
+    public RedirectView loginPost(@RequestParam("username") String username) {
         logger.info("Somebody requests POST Login");
 
         var stub = RemoteServiceGrpc.newBlockingStub(channel);
         var profileName = NameProto.newBuilder().setName(username).build();
         var response = stub.getProfileByName(profileName);
-        logger.info("response.authorized: {}", response.getAuthorized());
-        if (!response.getAuthorized()) {
-            throw new SomethingWrongException("Profile not found");
+        var authorized = response.getId() == 0;
+        logger.info("response.authorized: {}", authorized);
+        if (!authorized) {
+            throw new SomethingWrongException("Profile not authorized");
         }
-        var clientIdParam = response.getClientId() == 0 ? "" : "?clientId=" + response.getClientId();
 
-        return new RedirectView(String.format("/profile/%s%s", response.getId(), clientIdParam), true);
+        return new RedirectView(String.format("/profile/%s", response.getId()), true);
     }
 
     @GetMapping("/profile/{profileId}")
-    public String clientAccount(
-            @PathVariable("profileId") String profileId,
-            @RequestParam(value = "clientId", required = false) String clientId,
-            Model model) {
-        logger.info("profileId: {}; clientId: {}", profileId, clientId);
+    public String creditClaim(@PathVariable("profileId") String profileId, Model model) {
+        logger.info("profileId: {}", profileId);
 
-        var clientView = new ClientView(profileId);
+        var stub = RemoteServiceGrpc.newBlockingStub(channel);
+        var response = stub.getProfileById(
+                IdProto.newBuilder().setId(Long.parseLong(profileId)).build());
 
-        if (clientId != null) {
-            var stub = RemoteServiceGrpc.newBlockingStub(channel);
-            var client = stub.getClientById(
-                    IdProto.newBuilder().setId(Long.parseLong(clientId)).build());
-
-            clientView.setClientId(String.valueOf(client.getId()));
-            clientView.setName(client.getName());
-            clientView.setPassport(client.getPassport());
-        }
+        var clientView = mapProfile(response);
         logger.info("clientView: {}", clientView);
-
         model.addAttribute("clientView", clientView);
 
         return "creditClaim";
@@ -77,42 +66,48 @@ public class BankClientController {
 
     @PostMapping("/client/save")
     public RedirectView saveClient(
-            @RequestParam(value = "profileId", required = true) String profileId,
-            @RequestParam(value = "name", required = true) String clientName,
-            @RequestParam(value = "passport", required = false) String passport,
-            @RequestParam(value = "income", required = false) String income,
+            @RequestParam(value = "profileId") String profileId,
+            @RequestParam(value = "profileName") String profileName,
+            @RequestParam(value = "clientName") String clientName,
             @RequestParam(value = "clientId", required = false) String clientId,
-            Model model) {
-        logger.info("saveClient (profoleId): {} ([])", clientName, profileId);
-
-        var clientProto = ClientProto.newBuilder()
-                .setProfileId(Long.parseLong(profileId))
-                .setId(clientId == null ? 0 : Long.parseLong(clientId))
-                .setName(clientName)
-                .setPassport(passport)
-                .build();
-        var stub = RemoteServiceGrpc.newBlockingStub(channel);
-        var response = stub.saveClient(clientProto);
-
-        logger.info("redirect to clientId: {}", response.getId());
-
-        return new RedirectView(String.format("/profile/%s?clientId=%s", response.getId(), response.getId()), true);
-    }
-
-    public RedirectView saveClient1(@RequestBody() ClientView clientView, Model model) {
+            @RequestParam(value = "passport", required = false) String passport) {
+        var clientView = new ClientView(profileId, profileName, clientId, clientName, passport);
         logger.info("saveClient: {}", clientView);
 
+        var profileProto = mapProfile(clientView);
         var stub = RemoteServiceGrpc.newBlockingStub(channel);
-        var response = stub.saveClient(mapClientProto(clientView));
+        var response = stub.saveProfile(profileProto);
+        logger.info("redirect to clientId: {}", response.getId());
 
-        return new RedirectView(String.format("/profile/%s?clientId=%s", response.getId(), response.getId()), true);
+        return new RedirectView(String.format("/profile/%s", response.getId()), true);
     }
 
-    private ClientProto mapClientProto(ClientView clientView) {
-        return ClientProto.newBuilder()
-                .setId(clientView.getClientId() == null ? 0 : Long.parseLong(clientView.getClientId()))
-                .setName(clientView.getName())
-                .setPassport(clientView.getPassport())
+    private ClientView mapProfile(ProfileProto profileProto) {
+        var clientProto = profileProto.getClient();
+        return new ClientView(
+                String.valueOf(profileProto.getId()),
+                profileProto.getName(),
+                String.valueOf(clientProto.getId()),
+                clientProto.getName(),
+                clientProto.getPassport());
+    }
+
+    private ProfileProto mapProfile(ClientView clientView) {
+        return ProfileProto.newBuilder()
+                .setId(keyStrToLong(clientView.profileId()))
+                .setName(clientView.profileName())
+                .setClient(mapClient(clientView))
                 .build();
+    }
+
+    private ProfileProto.Client.Builder mapClient(ClientView clientView) {
+        return ProfileProto.Client.newBuilder()
+                .setId(keyStrToLong(clientView.clientId()))
+                .setName(clientView.clientName())
+                .setPassport(clientView.passport());
+    }
+
+    private long keyStrToLong(String strKey) {
+        return strKey == null || strKey.trim().isEmpty() ? 0 : Long.parseLong(strKey);
     }
 }

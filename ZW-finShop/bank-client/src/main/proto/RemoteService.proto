@@ -4,17 +4,17 @@ package ru.aaf.finshop.proto;
 option java_multiple_files = true;
 
 message ProfileProto {
+    message Client {
+        int64 id = 1;
+        string name = 2;
+        optional string passport = 3;
+    }
     int64 id = 1;
-    optional int64 clientId = 2;
-    bool authorized = 3;
+    string name = 2;
+    optional Client client = 3;
+    bool authorized = 4;
 }
 
-message ClientProto {
-    int64 id = 1;
-    string name = 3;
-    int64 profileId = 2;
-    optional string passport = 4;
-}
 
 message NameProto {
     string name = 1;
@@ -27,7 +27,7 @@ message IdProto {
 message EmptyProto {}
 
 service RemoteService {
-  rpc getProfileByName(NameProto) returns (ProfileProto);
-  rpc getClientById(IdProto) returns (ClientProto);
-  rpc saveClient(ClientProto) returns (ClientProto);
+    rpc getProfileByName(NameProto) returns (IdProto);
+    rpc getProfileById(IdProto) returns (ProfileProto);
+    rpc saveProfile(ProfileProto) returns (ProfileProto);
 }
