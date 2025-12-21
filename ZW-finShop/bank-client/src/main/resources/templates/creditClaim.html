@@ -80,18 +80,18 @@
     </style>
 </head>
 <body>
-<div class="container" th:object="${clientView}" >
+<div class="container">
     <h1>Заявка на кредит</h1>
 
     <!-- Client -->
-    <form id="client-info" th:action="@{/client/save}" th:method="post" accept-charset="utf-8">
+    <form id="client-info" th:object="${clientView}"  th:action="@{/client/save}" th:method="post" accept-charset="utf-8">
 
         <div class="info-row">
-            <span class="info-label">Profile ID:</span>
-            <span class="info-value" id="profileId" th:value="*{profileId}">
+            <label for="profileId" class="info-label">Profile ID:</label>
+            <input class="info-value" id="profileId" name="name" th:value="*{profileId}" disabled="true">
         </div>
         <div class="info-row">
-            <span class="info-label">ID:</span>
+            <span class="info-label">Client ID:</span>
             <span class="info-value" id="clientId" th:value="*{clientId}">Заполните личные данные</span>
         </div>
 

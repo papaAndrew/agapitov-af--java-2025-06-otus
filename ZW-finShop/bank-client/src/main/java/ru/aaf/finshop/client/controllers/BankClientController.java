@@ -57,17 +57,18 @@ public class BankClientController {
             Model model) {
         logger.info("profileId: {}; clientId: {}", profileId, clientId);
 
-        var clientView = new ClientView(Long.parseLong(profileId));
+        var clientView = new ClientView(profileId);
 
         if (clientId != null) {
             var stub = RemoteServiceGrpc.newBlockingStub(channel);
             var client = stub.getClientById(
                     IdProto.newBuilder().setId(Long.parseLong(clientId)).build());
 
-            clientView.setClientId(client.getId());
+            clientView.setClientId(String.valueOf(client.getId()));
             clientView.setName(client.getName());
             clientView.setPassport(client.getPassport());
         }
+        logger.info("clientView: {}", clientView);
 
         model.addAttribute("clientView", clientView);
 
@@ -109,7 +110,7 @@ public class BankClientController {
 
     private ClientProto mapClientProto(ClientView clientView) {
         return ClientProto.newBuilder()
-                .setId(clientView.getClientId() == null ? 0 : clientView.getClientId())
+                .setId(clientView.getClientId() == null ? 0 : Long.parseLong(clientView.getClientId()))
                 .setName(clientView.getName())
                 .setPassport(clientView.getPassport())
                 .build();

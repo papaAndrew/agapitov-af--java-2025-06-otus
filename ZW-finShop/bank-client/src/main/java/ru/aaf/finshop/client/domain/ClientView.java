@@ -9,13 +9,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ClientView {
-    private Long profileId;
-    private Long clientId;
+    private String profileId;
+    private String clientId;
     private String name;
     private String passport;
     private Integer income;
 
-    public ClientView(Long profileId) {
+    public ClientView(String profileId) {
         this.profileId = profileId;
     }
 
