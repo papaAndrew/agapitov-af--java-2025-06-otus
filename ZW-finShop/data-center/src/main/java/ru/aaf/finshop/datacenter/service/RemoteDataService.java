@@ -4,7 +4,6 @@ import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import reactor.core.publisher.Mono;
 import ru.aaf.finshop.datacenter.model.Client;
 import ru.aaf.finshop.datacenter.model.Profile;
 import ru.aaf.finshop.proto.*;
@@ -22,41 +21,59 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
 
     @Override
     public void getProfileByName(NameProto request, StreamObserver<IdProto> responseObserver) {
-        log.info("getProfileByPrincipal: {}", request);
-        var monoProfile = dataService.getProfileByName(request.getName());
-        responseObserver.onNext(mapProfile(monoProfile));
+        log.info("getProfileByName: {}", request);
+        var profile = dataService.getProfileByName(request.getName()).orElse(null);
+        log.info("getProfileByName: profile: {}", profile);
+        responseObserver.onNext(mapProfileId(profile));
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getProfileById(IdProto request, StreamObserver<ProfileProto> responseObserver) {
+        log.info("getProfileById: {}", request);
+        var profile = dataService.getProfileById(request.getId()).orElse(null);
+        log.info("getProfileById: profile: {}", profile);
+
+        responseObserver.onNext(mapProfile(profile));
         responseObserver.onCompleted();
     }
 
     @Override
     public void saveProfile(ProfileProto request, StreamObserver<ProfileProto> responseObserver) {
-        log.info("saveClient: {}", request);
-        var isNew = !request.getAuthorized();
-        var monoProfile = dataService.saveProfile(mapProfile(request));
-        log.info("clientId (isNew): {}({})", request.getId(), isNew);
-        responseObserver.onNext(mapProfile(monoProfile));
+        log.info("saveProfile: {}", request);
+        var profile = dataService.updateProfile(mapProfile(request));
+        log.info("saveProfile: updatedProfile: {}", mapProfile(request));
+
+        responseObserver.onNext(mapProfile(profile));
         responseObserver.onCompleted();
     }
 
-    private ProfileProto mapProfile(Mono<Profile> monoProfile) {
-        var optionalProfile = monoProfile.blockOptional();
-        if (optionalProfile.isEmpty()) {
-            return ProfileProto.newBuilder().setAuthorized(false).build();
-        }
-        var profile = optionalProfile.get();
-        return ProfileProto.newBuilder()
-                .setId(profile.getProfileId())
-                .setClient(mapClient(profile.getClient()))
-                .setAuthorized(true)
+    private IdProto mapProfileId(Profile profile) {
+        return IdProto.newBuilder()
+                .setId(profile == null ? 0 : profile.getProfileId())
                 .build();
     }
 
-    private ProfileProto.Client mapClient(Client clientProto) {
-        return ProfileProto.Client.newBuilder()
-                .setId(clientProto.getClientId())
-                .setName(clientProto.getName())
-                .setPassport(clientProto.getPassport())
-                .build();
+    private ProfileProto mapProfile(Profile profile) {
+        var builder = ProfileProto.newBuilder();
+        if (profile == null) {
+            builder.setAuthorized(false).clearId();
+        } else {
+            builder.setAuthorized(true)
+                    .setId(profile.getProfileId())
+                    .setName(profile.getName())
+                    .setClient(mapClient(profile.getClient()));
+        }
+        return builder.build();
+    }
+
+    private ProfileProto.Client.Builder mapClient(Client clientProto) {
+        return clientProto == null
+                ? ProfileProto.Client.newBuilder().clear()
+                : ProfileProto.Client.newBuilder()
+                        .setId(clientProto.getClientId())
+                        .setName(clientProto.getName())
+                        .setPassport(clientProto.getPassport());
     }
 
     private Profile mapProfile(ProfileProto profile) {
@@ -65,6 +82,9 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
     }
 
     private Client mapClient(ProfileProto.Client clientProto) {
+        if (clientProto.getName().isBlank()) {
+            return null;
+        }
         var isNew = clientProto.getId() == 0;
         return new Client(isNew ? null : clientProto.getId(), clientProto.getName(), clientProto.getPassport(), isNew);
     }

@@ -1,6 +1,7 @@
 package ru.aaf.finshop.client.controllers;
 
 import io.grpc.ManagedChannel;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -40,7 +41,7 @@ public class BankClientController {
         var stub = RemoteServiceGrpc.newBlockingStub(channel);
         var profileName = NameProto.newBuilder().setName(username).build();
         var response = stub.getProfileByName(profileName);
-        var authorized = response.getId() == 0;
+        var authorized = response.getId() > 0;
         logger.info("response.authorized: {}", authorized);
         if (!authorized) {
             throw new SomethingWrongException("Profile not authorized");
@@ -67,11 +68,10 @@ public class BankClientController {
     @PostMapping("/client/save")
     public RedirectView saveClient(
             @RequestParam(value = "profileId") String profileId,
-            @RequestParam(value = "profileName") String profileName,
-            @RequestParam(value = "clientName") String clientName,
+            @RequestParam(value = "clientName", required = false) String clientName,
             @RequestParam(value = "clientId", required = false) String clientId,
             @RequestParam(value = "passport", required = false) String passport) {
-        var clientView = new ClientView(profileId, profileName, clientId, clientName, passport);
+        var clientView = new ClientView(profileId, null, clientId, clientName, passport);
         logger.info("saveClient: {}", clientView);
 
         var profileProto = mapProfile(clientView);
@@ -93,21 +93,36 @@ public class BankClientController {
     }
 
     private ProfileProto mapProfile(ClientView clientView) {
-        return ProfileProto.newBuilder()
+        var builder = ProfileProto.newBuilder()
                 .setId(keyStrToLong(clientView.profileId()))
-                .setName(clientView.profileName())
-                .setClient(mapClient(clientView))
-                .build();
+                .setClient(mapClient(clientView));
+        if (isDefined(clientView.profileName())) {
+            builder.setName(clientView.profileName());
+        }
+        return builder.build();
     }
 
     private ProfileProto.Client.Builder mapClient(ClientView clientView) {
-        return ProfileProto.Client.newBuilder()
-                .setId(keyStrToLong(clientView.clientId()))
-                .setName(clientView.clientName())
-                .setPassport(clientView.passport());
+        var builder = ProfileProto.Client.newBuilder().setId(keyStrToLong(clientView.clientId()));
+        if (isDefined(clientView.clientName())) {
+            builder.setName(clientView.clientName());
+        }
+        if (isDefined(clientView.passport())) {
+            builder.setPassport(clientView.passport());
+            ;
+        }
+        return builder;
     }
 
     private long keyStrToLong(String strKey) {
-        return strKey == null || strKey.trim().isEmpty() ? 0 : Long.parseLong(strKey);
+        return strKey == null || strKey.isBlank() ? 0 : Long.parseLong(strKey);
+    }
+
+    private String strNonNull(String value) {
+        return Objects.requireNonNullElse(value, "null");
+    }
+
+    private boolean isDefined(String value) {
+        return !Objects.requireNonNullElse(value, "").isBlank();
     }
 }

@@ -1,28 +1,27 @@
 package ru.aaf.finshop.datacenter.model;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
-import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 @SuppressWarnings("java:S125")
-@Table("client")
 @Getter
-public class Client implements Persistable<String> {
+@Setter
+@Table("client")
+public class Client implements Cloneable, Persistable<Long> {
 
     @Id
     private final Long id;
 
+    @NonNull
     private final String name;
 
-    @MappedCollection(idColumn = "client_id")
     private final String passport;
-
-    //    @MappedCollection(idColumn = "client_id")
-    //    private final Profile profile;
 
     @Transient
     private final boolean isNew;
@@ -45,8 +44,8 @@ public class Client implements Persistable<String> {
     }
 
     @Override
-    public String getId() {
-        return id != null ? String.valueOf(id) : null;
+    public Long getId() {
+        return id;
     }
 
     public Long getClientId() {
@@ -59,5 +58,10 @@ public class Client implements Persistable<String> {
         return "Class Client{id=" + id + delim + "    name='" + name + '\'' + delim
                 + "    passport=" + passport + delim
                 + "    isNew=" + isNew + '}';
+    }
+
+    @Override
+    public Object clone() {
+        return new Client(id, name, passport, isNew);
     }
 }

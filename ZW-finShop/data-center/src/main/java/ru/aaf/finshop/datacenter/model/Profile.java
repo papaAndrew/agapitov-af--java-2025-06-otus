@@ -1,21 +1,27 @@
 package ru.aaf.finshop.datacenter.model;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
+@Setter
 @Table("profile")
-public class Profile implements Persistable<String> {
+public class Profile implements Persistable<Long> {
 
     @Id
     private Long id;
 
     private String name;
 
+    @Column("client_id")
+    @MappedCollection(idColumn = "client_id")
     private Client client;
 
     @Transient
@@ -39,8 +45,8 @@ public class Profile implements Persistable<String> {
     }
 
     @Override
-    public String getId() {
-        return id != null ? String.valueOf(id) : null;
+    public Long getId() {
+        return id;
     }
 
     public Long getProfileId() {
