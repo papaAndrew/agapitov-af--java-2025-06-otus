@@ -3,3 +3,9 @@ server:
 
 datacenter:
   url: localhost:8190
+
+spring:
+  kafka:
+    bootstrap-servers: "localhost:9092"
+    consumer:
+      group-id: "bankClient"

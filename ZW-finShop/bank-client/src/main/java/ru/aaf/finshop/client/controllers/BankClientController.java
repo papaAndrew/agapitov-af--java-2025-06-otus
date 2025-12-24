@@ -13,7 +13,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import reactor.core.publisher.Flux;
 import ru.aaf.finshop.client.SomethingWrongException;
 import ru.aaf.finshop.client.domain.ClientView;
-import ru.aaf.finshop.client.processor.DataProcessor;
+import ru.aaf.finshop.client.service.DataProcessor;
 import ru.aaf.finshop.proto.IdProto;
 import ru.aaf.finshop.proto.NameProto;
 import ru.aaf.finshop.proto.ProfileProto;
@@ -92,9 +92,9 @@ public class BankClientController {
     @GetMapping(value = "/stream", produces = MediaType.APPLICATION_NDJSON_VALUE)
     public Flux<StringValue> data() {
         logger.info("request for data");
-        var srcRequest = List.of(new StringValue("Одобрям :-)"));
+//        var srcRequest = List.of(new StringValue("Одобрям :-)"));
 
-        return dataProcessor.processFlux(srcRequest);
+        return dataProcessor.ackClaimStatus();
     }
 
     private ClientView mapProfile(ProfileProto profileProto) {
