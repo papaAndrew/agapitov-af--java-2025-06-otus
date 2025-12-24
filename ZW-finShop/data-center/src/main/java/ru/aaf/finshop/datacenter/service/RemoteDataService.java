@@ -22,7 +22,7 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
     @Override
     public void getProfileByName(NameProto request, StreamObserver<IdProto> responseObserver) {
         log.info("getProfileByName: {}", request);
-        var profile = dataService.getProfileByName(request.getName()).orElse(null);
+        var profile = dataService.getProfileByName(request.getName());
         log.info("getProfileByName: profile: {}", profile);
         responseObserver.onNext(mapProfileId(profile));
         responseObserver.onCompleted();
@@ -31,7 +31,7 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
     @Override
     public void getProfileById(IdProto request, StreamObserver<ProfileProto> responseObserver) {
         log.info("getProfileById: {}", request);
-        var profile = dataService.getProfileById(request.getId()).orElse(null);
+        var profile = dataService.getProfileById(request.getId());
         log.info("getProfileById: profile: {}", profile);
 
         responseObserver.onNext(mapProfile(profile));
@@ -78,7 +78,8 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
 
     private Profile mapProfile(ProfileProto profile) {
         var isNew = profile.getId() == 0;
-        return new Profile(isNew ? null : profile.getId(), profile.getName(), mapClient(profile.getClient()), isNew);
+        return new Profile(isNew ? null : profile.getId(), profile.getName(), null, isNew)
+                .client(mapClient(profile.getClient()));
     }
 
     private Client mapClient(ProfileProto.Client clientProto) {

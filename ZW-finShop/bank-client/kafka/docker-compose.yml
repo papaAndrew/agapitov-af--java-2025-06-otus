@@ -1,0 +1,81 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.2.15
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:7.2.15
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      # Enable SASL/PLAIN authentication for ACLs
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "false"
+      KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
+      KAFKA_SUPER_USERS: User:admin;User:papa
+    command: >
+      bash -c "
+      echo 'Starting Kafka broker...' &&
+      /etc/confluent/docker/run &
+      sleep 30 &&
+      echo 'Creating topic credit.claim...' &&
+      kafka-topics --bootstrap-server broker:29092 --create --topic credit.claim --partitions 1 --replication-factor 1 &&
+      echo 'Creating user papa...' &&
+      echo 'papa:papa-secret' > /tmp/kafka-users.txt &&
+      kafka-configs --bootstrap-server broker:29092 --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password=papa-secret],SCRAM-SHA-512=[password=papa-secret]' --entity-type users --entity-name papa &&
+      echo 'Setting ACLs for user papa on credit.claim...' &&
+      kafka-acls --bootstrap-server broker:29092 --add --allow-principal User:papa --operation All --topic credit.claim --command-config /tmp/admin-client.properties &&
+      kafka-acls --bootstrap-server broker:29092 --add --allow-principal User:papa --operation All --group '*' --command-config /tmp/admin-client.properties &&
+      echo 'Topic and ACL setup completed!' &&
+      wait
+      "
+    volumes:
+      # Create admin client config for ACL operations
+      - ./admin-client.properties:/tmp/admin-client.properties
+
+  kafka-setup:
+    image: confluentinc/cp-kafka:7.2.15
+    container_name: kafka-setup
+    depends_on:
+      broker:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER: broker:29092
+    command: >
+      bash -c "
+      echo 'Waiting for Kafka to be ready...' &&
+      # Wait for Kafka to be fully ready
+      sleep 45 &&
+      echo 'Creating topic credit.claim...' &&
+      kafka-topics --bootstrap-server broker:29092 --create --if-not-exists --topic credit.claim --partitions 1 --replication-factor 1 &&
+      echo 'Creating SCRAM user papa...' &&
+      kafka-configs --bootstrap-server broker:29092 --alter --add-config 'SCRAM-SHA-256=[iterations=4096,password=papa-secret],SCRAM-SHA-512=[password=papa-secret]' --entity-type users --entity-name papa &&
+      echo 'Setting ACLs for user papa...' &&
+      kafka-acls --bootstrap-server broker:29092 --add --allow-principal User:papa --operation All --topic credit.claim &&
+      kafka-acls --bootstrap-server broker:29092 --add --allow-principal User:papa --operation All --group '*' &&
+      echo 'Setup completed successfully!' &&
+      exit 0
+      "
+    profiles:
+      - setup
+    restart: "no"
+
+# Health check for broker
+x-broker-healthcheck: &broker-healthcheck
+  test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+  interval: 10s
+  timeout: 5s
+  retries: 20
+  start_period: 30s

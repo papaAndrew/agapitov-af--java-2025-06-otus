@@ -54,10 +54,11 @@ public class Client implements Cloneable, Persistable<Long> {
 
     @Override
     public String toString() {
-        var delim = ",\n";
-        return "Class Client{id=" + id + delim + "    name='" + name + '\'' + delim
-                + "    passport=" + passport + delim
-                + "    isNew=" + isNew + '}';
+        return "Client {\n" + "   id: "
+                + id + ";\n" + "   name: \""
+                + name + "\";\n" + "   passport: \""
+                + passport + "\";\n" + "   isNew="
+                + isNew + ";\n" + "}";
     }
 
     @Override
