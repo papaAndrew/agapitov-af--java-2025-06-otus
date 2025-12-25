@@ -16,10 +16,11 @@ create table profile
 create unique index idx_profile_name on profile (name);
 
 
-
-
--- After creating all tables
-alter table profile
-    add constraint fk_profile_client
-    foreign key (client_id) references client (id);
-
+create table claim
+(
+    id          bigserial   not null    primary key,
+    client_id   bigint      not null    references client (id),
+    status      smallint    not null,
+    period      integer,
+    amount      integer
+);

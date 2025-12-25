@@ -9,6 +9,7 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+@SuppressWarnings({"java:S125", "java:S4144"})
 @Getter
 @Setter
 @Table("profile")

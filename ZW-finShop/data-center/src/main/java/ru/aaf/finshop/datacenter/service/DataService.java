@@ -1,6 +1,7 @@
 package ru.aaf.finshop.datacenter.service;
 
 import ru.aaf.finshop.datacenter.model.Client;
+import ru.aaf.finshop.datacenter.model.LoanClaim;
 import ru.aaf.finshop.datacenter.model.Profile;
 
 public interface DataService {
@@ -16,4 +17,7 @@ public interface DataService {
     Client createOrUpdateClient(Client client);
 
     Profile updateProfile(Profile profile);
+
+    LoanClaim saveLoanClaim(LoanClaim loanClaim);
+
 }

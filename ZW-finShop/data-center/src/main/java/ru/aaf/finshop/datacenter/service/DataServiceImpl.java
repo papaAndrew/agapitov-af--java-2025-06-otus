@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.aaf.finshop.datacenter.model.Client;
+import ru.aaf.finshop.datacenter.model.LoanClaim;
 import ru.aaf.finshop.datacenter.model.Profile;
 import ru.aaf.finshop.datacenter.repository.ClientRepository;
+import ru.aaf.finshop.datacenter.repository.LoanClaimRepository;
 import ru.aaf.finshop.datacenter.repository.ProfileRepository;
 
 @SuppressWarnings({"java:S1068", "java:S125"})
@@ -15,10 +17,12 @@ public class DataServiceImpl implements DataService {
     private static final Logger log = LoggerFactory.getLogger(DataServiceImpl.class);
     private final ProfileRepository profileRepository;
     private final ClientRepository clientRepository;
+    private final LoanClaimRepository loanClaimRepository;
 
-    public DataServiceImpl(ProfileRepository profileRepository, ClientRepository clientRepository) {
+    public DataServiceImpl(ProfileRepository profileRepository, ClientRepository clientRepository, LoanClaimRepository loanClaimRepository) {
         this.profileRepository = profileRepository;
         this.clientRepository = clientRepository;
+        this.loanClaimRepository = loanClaimRepository;
     }
 
     @Override
@@ -87,5 +91,11 @@ public class DataServiceImpl implements DataService {
 
         log.info("updateProfile: updating: {}", profile);
         return saveProfile(profile);
+    }
+
+    @Override
+    public LoanClaim saveLoanClaim(LoanClaim loanClaim) {
+        log.info("saveLoanClaim: {}", loanClaim);
+        return loanClaimRepository.save(loanClaim).block();
     }
 }

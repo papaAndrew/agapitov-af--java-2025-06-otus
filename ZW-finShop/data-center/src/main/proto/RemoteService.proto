@@ -26,8 +26,17 @@ message IdProto {
 
 message EmptyProto {}
 
+message LoanClaimProto {
+    int64 id = 1;
+    int64 clientId = 2;
+    uint32 status = 3;
+    uint32 period = 4;
+    int32 amount = 5;
+}
+
 service RemoteService {
     rpc getProfileByName(NameProto) returns (IdProto);
     rpc getProfileById(IdProto) returns (ProfileProto);
     rpc saveProfile(ProfileProto) returns (ProfileProto);
+    rpc saveClaim(LoanClaimProto) returns (LoanClaimProto);
 }

@@ -9,11 +9,11 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 
-@SuppressWarnings("java:S125")
+@SuppressWarnings({"java:S125", "java:S4144"})
 @Getter
 @Setter
 @Table("client")
-public class Client implements Cloneable, Persistable<Long> {
+public class Client implements Persistable<Long> {
 
     @Id
     private final Long id;
@@ -59,10 +59,5 @@ public class Client implements Cloneable, Persistable<Long> {
                 + name + "\";\n" + "   passport: \""
                 + passport + "\";\n" + "   isNew="
                 + isNew + ";\n" + "}";
-    }
-
-    @Override
-    public Object clone() {
-        return new Client(id, name, passport, isNew);
     }
 }

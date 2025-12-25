@@ -5,6 +5,7 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.aaf.finshop.datacenter.model.Client;
+import ru.aaf.finshop.datacenter.model.LoanClaim;
 import ru.aaf.finshop.datacenter.model.Profile;
 import ru.aaf.finshop.proto.*;
 
@@ -48,6 +49,15 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void saveClaim(LoanClaimProto request, StreamObserver<LoanClaimProto> responseObserver) {
+        log.info("saveClaim: {}", request);
+        var loanClaim = dataService.saveLoanClaim(mapLoanClaim(request));
+
+        responseObserver.onNext(mapLoanClaim(loanClaim));
+        responseObserver.onCompleted();
+    }
+
     private IdProto mapProfileId(Profile profile) {
         return IdProto.newBuilder()
                 .setId(profile == null ? 0 : profile.getProfileId())
@@ -88,5 +98,25 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
         }
         var isNew = clientProto.getId() == 0;
         return new Client(isNew ? null : clientProto.getId(), clientProto.getName(), clientProto.getPassport(), isNew);
+    }
+
+    private LoanClaim mapLoanClaim(LoanClaimProto loanClaimProto) {
+        return new LoanClaim(
+                null,
+                loanClaimProto.getClientId(),
+                loanClaimProto.getStatus(),
+                loanClaimProto.getPeriod(),
+                loanClaimProto.getAmount()
+        );
+    }
+    private LoanClaimProto mapLoanClaim(LoanClaim loanClaim) {
+        return LoanClaimProto.newBuilder()
+                .setId(loanClaim.id())
+                .setClientId(loanClaim.clientId())
+                .setStatus(loanClaim.status())
+                .setPeriod(loanClaim.period())
+                .setAmount(loanClaim.amount())
+                .build();
+
     }
 }
