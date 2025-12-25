@@ -5,6 +5,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import ru.aaf.finshop.client.controllers.StringValue;
 
+@SuppressWarnings("java:S125")
 @Slf4j
 @Service
 public class KafkaReceiver {

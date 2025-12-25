@@ -19,5 +19,4 @@ public interface DataService {
     Profile updateProfile(Profile profile);
 
     LoanClaim saveLoanClaim(LoanClaim loanClaim);
-
 }

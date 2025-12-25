@@ -19,7 +19,10 @@ public class DataServiceImpl implements DataService {
     private final ClientRepository clientRepository;
     private final LoanClaimRepository loanClaimRepository;
 
-    public DataServiceImpl(ProfileRepository profileRepository, ClientRepository clientRepository, LoanClaimRepository loanClaimRepository) {
+    public DataServiceImpl(
+            ProfileRepository profileRepository,
+            ClientRepository clientRepository,
+            LoanClaimRepository loanClaimRepository) {
         this.profileRepository = profileRepository;
         this.clientRepository = clientRepository;
         this.loanClaimRepository = loanClaimRepository;

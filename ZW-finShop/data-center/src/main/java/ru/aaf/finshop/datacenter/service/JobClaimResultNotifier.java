@@ -21,7 +21,7 @@ public class JobClaimResultNotifier {
     @Autowired
     public void execute() {
         log.info("execute claims ...");
-        executor.scheduleAtFixedRate(() -> busProducer.send(makeMessage()), 0, 5, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(() -> busProducer.send(makeMessage()), 0, 60, TimeUnit.SECONDS);
     }
 
     private String makeMessage() {

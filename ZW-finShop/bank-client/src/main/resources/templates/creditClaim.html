@@ -6,6 +6,7 @@
     <title>Заявка на кредит</title>
     <script src="/can-ndjson-stream_1.6.js"></script>
     <script src="/webclient.js"></script>
+    <script src="/app.js"></script>
 
     <style>
         * {
@@ -93,8 +94,8 @@
             <input class="info-value" id="profileId" name="profileId" th:value="*{profileId}">
         </div>
         <div class="info-row">
-            <span class="info-label">Client ID:</span>
-            <span class="info-value" id="clientId" name="clientId" th:value="*{clientId}">Заполните личные данные</span>
+            <label class="info-label">Client ID:</label>
+            <input class="info-value" id="clientId" name="clientId" th:value="*{clientId}">
         </div>
 
         <label for="clientName">Имя</label>
@@ -106,8 +107,11 @@
         <button type="submit">Сохранить</button>
 <!--        <button id="saveClient" onclick="saveClient()"> Сохранить</button>-->
     </form>
-    <!-- Client -->
-    <form id="credit-claim" th:action="@{/claim/submit}" th:method="post" accept-charset="utf-8">
+    <!-- Claim -->
+    <div class="container">
+        <label for="period"> Срок</label>
+        <input type="number" id="period" name="period">
+
         <label for="amount">Запрашиваемая сумма</label>
         <input type="number" id="amount" name="amount">
 
@@ -116,9 +120,10 @@
             <span class="info-value" id="status">Новый</span>
         </div>
 
-        <button type="submit">Отправить</button>
+        <!--<button type="submit">Отправить</button>-->
+        <button id="send" onclick="saveClaim()">Send</button>
 
-    </form>
+    </div>
 </div>
 </body>
 </html>

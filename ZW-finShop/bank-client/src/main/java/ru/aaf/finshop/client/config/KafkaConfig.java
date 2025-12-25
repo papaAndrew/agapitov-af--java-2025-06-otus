@@ -44,7 +44,7 @@ public class KafkaConfig {
         props.put(AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         props.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(AUTO_OFFSET_RESET_CONFIG, "latest");
+        props.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(MAX_POLL_RECORDS_CONFIG, 3);
         props.put(MAX_POLL_INTERVAL_MS_CONFIG, MAX_POLL_INTERVAL_MS);
 

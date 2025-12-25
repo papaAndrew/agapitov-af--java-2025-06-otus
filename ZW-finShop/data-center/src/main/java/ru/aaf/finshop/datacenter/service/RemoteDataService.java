@@ -106,9 +106,9 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
                 loanClaimProto.getClientId(),
                 loanClaimProto.getStatus(),
                 loanClaimProto.getPeriod(),
-                loanClaimProto.getAmount()
-        );
+                loanClaimProto.getAmount());
     }
+
     private LoanClaimProto mapLoanClaim(LoanClaim loanClaim) {
         return LoanClaimProto.newBuilder()
                 .setId(loanClaim.id())
@@ -117,6 +117,5 @@ public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
                 .setPeriod(loanClaim.period())
                 .setAmount(loanClaim.amount())
                 .build();
-
     }
 }

@@ -4,38 +4,31 @@ import io.grpc.ManagedChannel;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-import reactor.core.publisher.Flux;
 import ru.aaf.finshop.client.SomethingWrongException;
 import ru.aaf.finshop.client.domain.ClientView;
-import ru.aaf.finshop.client.service.DataProcessor;
 import ru.aaf.finshop.proto.IdProto;
 import ru.aaf.finshop.proto.NameProto;
 import ru.aaf.finshop.proto.ProfileProto;
 import ru.aaf.finshop.proto.RemoteServiceGrpc;
 
-@SuppressWarnings({"java:S125", "java:S1172"})
+@SuppressWarnings({"java:S125", "java:S1172", "java:S1144", "java:S6833", "java:S1116"})
 @Controller
 public class BankClientController {
     private static final Logger logger = LoggerFactory.getLogger(BankClientController.class);
 
     private final ManagedChannel channel;
-    private final DataProcessor<StringValue> dataProcessor;
 
-    public BankClientController(ManagedChannel channel, DataProcessor<StringValue> dataProcessor) {
+    public BankClientController(ManagedChannel channel) {
         this.channel = channel;
-        this.dataProcessor = dataProcessor;
     }
 
     @GetMapping("/login")
     public String login(Model model) {
         logger.info("Welcome to login page");
-        //        var clientView = new ClientView("papa", "6501", null, null);
-        //        model.addAttribute("clientView", clientView);
         return "loginPage";
     }
 
@@ -85,15 +78,6 @@ public class BankClientController {
         logger.info("redirect to clientId: {}", response.getId());
 
         return new RedirectView(String.format("/profile/%s", response.getId()), true);
-    }
-
-    @ResponseBody
-    @GetMapping(value = "/stream", produces = MediaType.APPLICATION_NDJSON_VALUE)
-    public Flux<StringValue> data() {
-        logger.info("request for data");
-        //        var srcRequest = List.of(new StringValue("Одобрям :-)"));
-
-        return dataProcessor.ackClaimStatus();
     }
 
     private ClientView mapProfile(ProfileProto profileProto) {

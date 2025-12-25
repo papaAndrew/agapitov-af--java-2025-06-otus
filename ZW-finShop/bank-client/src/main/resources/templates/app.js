@@ -1,26 +1,19 @@
 
-const saveClient = () => {
- const clientData = {
-        id: document.getElementById('clientId')?.value || '',
-        name: document.getElementById('firstName')?.value || '',
-        lastName: document.getElementById('lastName')?.value || '',
-        email: document.getElementById('email')?.value || '',
-        phone: document.getElementById('phone')?.value || '',
-        address: document.getElementById('address')?.value || '',
-        // Add other client properties as needed
+const saveClaim = () => {
+ const loanClaim = {
+        clientId: document.getElementById('clientId')?.value || '',
+        status: document.getElementById('status')?.value || '',
+        period: document.getElementById('period')?.value || '',
+        amount: document.getElementById('amount')?.value || '',
     };
 
-    // Alternative: If you have all data in a single object
-    // const clientData = {
-    //     // Your client object properties
-    // };
 
-    fetch("http://localhost:8020/client/save", {
+    fetch("http://localhost:8020/claim", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(clientData)
+        body: JSON.stringify(loanClaim)
     })
     .then(response => {
             if (!response.ok) {
@@ -33,14 +26,11 @@ const saveClient = () => {
             }
 
             // If not a redirect, try to parse as JSON
-            return response.json().then(data => {
+            return response && response.json().then(data => {
                 // Handle JSON response if needed
                 console.log("Success:", data);
 
-                // If your controller returns redirect URL in JSON
-                if (data.redirectUrl) {
-                    window.location.href = data.redirectUrl;
-                }
+                document.getElementById('status').textContent = data.status;
             });
         })
 }
