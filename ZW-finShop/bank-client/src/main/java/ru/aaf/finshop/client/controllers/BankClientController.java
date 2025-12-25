@@ -1,7 +1,6 @@
 package ru.aaf.finshop.client.controllers;
 
 import io.grpc.ManagedChannel;
-import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +91,7 @@ public class BankClientController {
     @GetMapping(value = "/stream", produces = MediaType.APPLICATION_NDJSON_VALUE)
     public Flux<StringValue> data() {
         logger.info("request for data");
-//        var srcRequest = List.of(new StringValue("Одобрям :-)"));
+        //        var srcRequest = List.of(new StringValue("Одобрям :-)"));
 
         return dataProcessor.ackClaimStatus();
     }
