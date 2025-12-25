@@ -1,8 +1,11 @@
 package ru.aaf.finshop.datacenter.service;
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.aaf.finshop.datacenter.model.Client;
 import ru.aaf.finshop.datacenter.model.LoanClaim;
 import ru.aaf.finshop.datacenter.model.Profile;
@@ -100,5 +103,22 @@ public class DataServiceImpl implements DataService {
     public LoanClaim saveLoanClaim(LoanClaim loanClaim) {
         log.info("saveLoanClaim: {}", loanClaim);
         return loanClaimRepository.save(loanClaim).block();
+    }
+
+    @Override
+    public List<LoanClaim> findClaimsByStatus(int status) {
+        log.info("findClaimsByStatus: status: {}", status);
+        return loanClaimRepository.findByStatus(status).collectList().block();
+    }
+
+    @Override
+    public Flux<LoanClaim> loadClaimsByStatus(int status) {
+        return loanClaimRepository.findByStatus(status);
+    }
+
+    @Override
+    public Mono<LoanClaim> updateClaimStatus(long claimId, int status) {
+        log.info("updateClaimStatus: id(status): {}({})", claimId, status);
+        return loanClaimRepository.updateStatusAndReturn(claimId, status);
     }
 }
