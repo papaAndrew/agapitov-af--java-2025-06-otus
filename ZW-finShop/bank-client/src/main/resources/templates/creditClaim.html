@@ -34,10 +34,16 @@
             margin-bottom: 24px;
             color: #2c3e50;
         }
+        h2 {
+            text-align: center;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
         .info-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             padding: 12px;
             background-color: #f8f9fa;
             border-radius: 6px;
@@ -63,7 +69,7 @@
             padding: 10px;
             border: 1px solid #dee2e6;
             border-radius: 4px;
-            margin-bottom: 16px;
+            margin-bottom: 3px;
             font-size: 14px;
         }
         button {
@@ -84,44 +90,53 @@
 </head>
 <body>
 <div class="container">
-    <h1>Заявка на кредит</h1>
+    <h1>Личный кабинет клиента</h1>
 
     <!-- Client -->
     <form id="client-info" th:object="${clientView}"  th:action="@{/client/save}" th:method="post" accept-charset="utf-8">
 
         <div class="info-row">
             <label for="profileId" class="info-label">Profile ID:</label>
-            <input class="info-value" id="profileId" name="profileId" th:value="*{profileId}">
+            <input class="info-label" id="profileId" name="profileId" th:value="*{profileId}" disabled="disabled">
         </div>
         <div class="info-row">
             <label class="info-label">Client ID:</label>
-            <input class="info-value" id="clientId" name="clientId" th:value="*{clientId}">
+            <input class="info-label" id="clientId" name="clientId" th:value="*{clientId}" disabled="disabled">
         </div>
 
-        <label for="clientName">Имя</label>
-        <input type="text" id="clientName" name="clientName" th:value="*{clientName}" required>
-
-        <label for="passport">Паспорт</label>
-        <input type="text" id="passport" name="passport" th:value="*{passport}">
-
-        <button type="submit">Сохранить</button>
-<!--        <button id="saveClient" onclick="saveClient()"> Сохранить</button>-->
-    </form>
-    <!-- Claim -->
-    <div class="container">
-        <label for="period"> Срок</label>
-        <input type="number" id="period" name="period">
-
-        <label for="amount">Запрашиваемая сумма</label>
-        <input type="number" id="amount" name="amount">
+        <div class="info-row">
+            <label for="clientName" class="info-label">Имя</label>
+            <input type="text" id="clientName" name="clientName" th:value="*{clientName}" required>
+        </div>
 
         <div class="info-row">
-            <span class="info-label">Статус:</span>
-            <span class="info-value" id="status">Новый</span>
+            <label for="passport" class="info-label">Паспорт</label>
+            <input type="text" id="passport" name="passport" th:value="*{passport}">
+        </div>
+        <button type="submit">Сохранить</button>
+    </form>
+    <h2>Заявка на кредит</h2>
+    <!-- Claim -->
+    <div class="form">
+        <div class="info-row">
+            <label class="info-label" for="period"> Срок</label>
+            <input class="info-value" type="number" id="period" name="period">
+        </div>
+        <div class="info-row">
+            <label for="amount">Запрашиваемая сумма</label>
+            <input type="number" id="amount" name="amount">
+        </div>
+        <div class="info-row">
+            <span>Номер заявки</span>
+            <span id="claimId"></span>
+        </div>
+        <div class="info-row">
+            <span>Статус:</span>
+            <span id="status">Новый</span>
         </div>
 
         <!--<button type="submit">Отправить</button>-->
-        <button id="send" onclick="saveClaim()">Send</button>
+        <button id="btnSend" onclick="saveClaim()">Запросить</button>
 
     </div>
 </div>
