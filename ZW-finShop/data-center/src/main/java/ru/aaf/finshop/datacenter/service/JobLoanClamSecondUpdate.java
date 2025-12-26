@@ -6,24 +6,23 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import ru.aaf.finshop.datacenter.model.LoanClaim;
 
 @Component
 @EnableScheduling
-public class JobLoanClamFirstUpdate extends AbstractLoanStatusProcessor {
-    private static final Logger log = LoggerFactory.getLogger(JobLoanClamFirstUpdate.class);
+public class JobLoanClamSecondUpdate extends AbstractLoanStatusProcessor {
+    private static final Logger log = LoggerFactory.getLogger(JobLoanClamSecondUpdate.class);
 
-    private static final int STATUS_NEW = 0;
+    private static final int STATUS_NEW = 1;
 
     private final DataService dataService;
     private final BusProducer busProducer;
 
-    public JobLoanClamFirstUpdate(DataService dataService, BusProducer busProducer) {
+    public JobLoanClamSecondUpdate(DataService dataService, BusProducer busProducer) {
         this.dataService = dataService;
         this.busProducer = busProducer;
     }
 
-    @Scheduled(initialDelay = 5000, fixedDelay = 60000)
+    @Scheduled(initialDelay = 10000, fixedDelay = 60000)
     @Override
     protected void process() {
         log.info("process: fromStatus : {}", STATUS_NEW);
