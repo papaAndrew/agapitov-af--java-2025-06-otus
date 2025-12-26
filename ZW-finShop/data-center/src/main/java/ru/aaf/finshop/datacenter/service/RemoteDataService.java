@@ -9,7 +9,6 @@ import ru.aaf.finshop.datacenter.model.LoanClaim;
 import ru.aaf.finshop.datacenter.model.Profile;
 import ru.aaf.finshop.proto.*;
 
-@SuppressWarnings({"java:S2094", "java:S125"})
 @GrpcService
 public class RemoteDataService extends RemoteServiceGrpc.RemoteServiceImplBase {
     private static final Logger log = LoggerFactory.getLogger(RemoteDataService.class);

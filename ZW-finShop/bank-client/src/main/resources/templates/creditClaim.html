@@ -72,6 +72,11 @@
             margin-bottom: 3px;
             font-size: 14px;
         }
+        input[readonly] {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
         button {
             background-color: #007bff;
             color: white;
@@ -97,11 +102,11 @@
 
         <div class="info-row">
             <label for="profileId" class="info-label">Profile ID:</label>
-            <input class="info-label" id="profileId" name="profileId" th:value="*{profileId}" disabled="disabled">
+            <input id="profileId" name="profileId" th:value="*{profileId}" readonly>
         </div>
         <div class="info-row">
             <label class="info-label">Client ID:</label>
-            <input class="info-label" id="clientId" name="clientId" th:value="*{clientId}" disabled="disabled">
+            <input id="clientId" name="clientId" th:value="*{clientId}" readonly>
         </div>
 
         <div class="info-row">

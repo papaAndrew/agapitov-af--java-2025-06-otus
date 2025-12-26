@@ -11,7 +11,6 @@ import ru.aaf.finshop.client.service.DataProcessor;
 import ru.aaf.finshop.proto.LoanClaimProto;
 import ru.aaf.finshop.proto.RemoteServiceGrpc;
 
-@SuppressWarnings({"java:S125", "java:S1172", "java:S1144", "java:S6833", "java:S1116"})
 @RestController
 public class BankClientRestController {
     private static final Logger logger = LoggerFactory.getLogger(BankClientRestController.class);
@@ -38,11 +37,9 @@ public class BankClientRestController {
         return new LoanClaimDto(
                 response.getId(),
                 response.getClientId(),
-                "Status " + response.getStatus(),
+                LoanClaimDto.statusMap.get(response.getStatus()),
                 response.getPeriod(),
                 response.getAmount());
-        //        return new LoanClaimDto(null, loanClaim.clientId(), "Solving...", loanClaim.period(),
-        // loanClaim.amount());
     }
 
     @GetMapping(value = "/status", produces = MediaType.APPLICATION_NDJSON_VALUE)

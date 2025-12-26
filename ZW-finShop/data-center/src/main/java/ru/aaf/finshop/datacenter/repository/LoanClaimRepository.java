@@ -12,15 +12,10 @@ public interface LoanClaimRepository extends ReactiveCrudRepository<LoanClaim, L
 
     Flux<LoanClaim> findByStatus(int status);
 
-    //    @Modifying
-    //    @Query("UPDATE claim SET status = :status WHERE id = :id RETURNING *")
-    //    Mono<LoanClaim> updateStatusAndReturn(@Param("id") long id, @Param("status") int status);
-
     @Modifying
     @Query("UPDATE claim SET status = :status WHERE id = :id")
     Mono<Void> updateStatus(@Param("id") long id, @Param("status") int status);
 
-    // Custom method that combines update and fetch
     default Mono<LoanClaim> updateStatusAndReturn(long id, int status) {
         return updateStatus(id, status).then(findById(id));
     }

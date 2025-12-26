@@ -15,7 +15,6 @@ import ru.aaf.finshop.proto.NameProto;
 import ru.aaf.finshop.proto.ProfileProto;
 import ru.aaf.finshop.proto.RemoteServiceGrpc;
 
-@SuppressWarnings({"java:S125", "java:S1172", "java:S1144", "java:S6833", "java:S1116"})
 @Controller
 public class BankClientController {
     private static final Logger logger = LoggerFactory.getLogger(BankClientController.class);
@@ -107,17 +106,12 @@ public class BankClientController {
         }
         if (isDefined(clientView.passport())) {
             builder.setPassport(clientView.passport());
-            ;
         }
         return builder;
     }
 
     private long keyStrToLong(String strKey) {
         return strKey == null || strKey.isBlank() ? 0 : Long.parseLong(strKey);
-    }
-
-    private String strNonNull(String value) {
-        return Objects.requireNonNullElse(value, "null");
     }
 
     private boolean isDefined(String value) {

@@ -10,11 +10,6 @@ public class ApplConfig {
 
     private static final int THREAD_POOL_SIZE = 1;
 
-    //    @Bean
-    //    public ScheduledExecutorService scheduledExecutorService() {
-    //        return Executors.newScheduledThreadPool(THREAD_POOL_SIZE);
-    //    }
-
     @Bean
     public Scheduler workerPool() {
         return Schedulers.newParallel("processor-thread", THREAD_POOL_SIZE);

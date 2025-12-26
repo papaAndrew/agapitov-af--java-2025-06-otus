@@ -13,7 +13,6 @@ import ru.aaf.finshop.datacenter.repository.ClientRepository;
 import ru.aaf.finshop.datacenter.repository.LoanClaimRepository;
 import ru.aaf.finshop.datacenter.repository.ProfileRepository;
 
-@SuppressWarnings({"java:S1068", "java:S125"})
 @Service
 public class DataServiceImpl implements DataService {
 
