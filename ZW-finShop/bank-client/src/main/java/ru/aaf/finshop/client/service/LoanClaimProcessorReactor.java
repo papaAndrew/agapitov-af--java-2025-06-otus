@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
-import ru.aaf.finshop.client.controllers.StringValue;
 import ru.aaf.finshop.client.domain.LoanClaimDto;
 
 @Service
@@ -17,7 +16,6 @@ public class LoanClaimProcessorReactor implements DataProcessor<LoanClaimDto> {
     public LoanClaimProcessorReactor() {
         this.claimStatusSink = Sinks.many().multicast().onBackpressureBuffer();
     }
-
 
     @Override
     public Flux<LoanClaimDto> ackClaimStatus() {

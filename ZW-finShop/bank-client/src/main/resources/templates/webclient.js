@@ -18,9 +18,8 @@ fetch("http://localhost:8020/status").then((response) => {
 });
 
 const render = value => {
-    const statusElement = document.getElementById('status');
-    if (statusElement) {
-        const text = value.value ? value.value : JSON.stringify(value);
-        statusElement.textContent = text;
-    }
+    document.getElementById('claimId').textContent = value.id;
+    document.getElementById('status').textContent = value.status;
+    document.getElementById('period').textContent = value.period;
+    document.getElementById('amount').textContent = value.amount;
 };

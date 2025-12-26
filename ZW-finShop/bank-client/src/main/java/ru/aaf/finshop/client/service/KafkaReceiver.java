@@ -1,19 +1,22 @@
 package ru.aaf.finshop.client.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import ru.aaf.finshop.client.controllers.StringValue;
+import ru.aaf.finshop.client.domain.LoanClaimDto;
 
 @SuppressWarnings("java:S125")
 @Slf4j
 @Service
 public class KafkaReceiver {
 
-    //    private final Consumer<StringValue> valueConsumer;
-    private final DataProcessor<StringValue> dataProcessor;
+    private static final ObjectMapper mapper = new ObjectMapper();
 
-    public KafkaReceiver(DataProcessor<StringValue> dataProcessor) {
+    private final DataProcessor<LoanClaimDto> dataProcessor;
+
+    public KafkaReceiver(DataProcessor<LoanClaimDto> dataProcessor) {
         this.dataProcessor = dataProcessor;
     }
 
@@ -24,6 +27,11 @@ public class KafkaReceiver {
     @KafkaListener(id = "bcl-00", topics = "bank_client")
     public void listen(String msg) {
         log.info("listen: {}", msg);
-        dataProcessor.putClaimStatus(new StringValue(msg));
+        try {
+            var mappedDto = LoanClaimDto.createMapped(mapper.readValue(msg, LoanClaimDto.class));
+            dataProcessor.putClaimStatus(mappedDto);
+        } catch (JsonProcessingException e) {
+            dataProcessor.putClaimStatus(new LoanClaimDto(null, null, "Error!!", null, null));
+        }
     }
 }

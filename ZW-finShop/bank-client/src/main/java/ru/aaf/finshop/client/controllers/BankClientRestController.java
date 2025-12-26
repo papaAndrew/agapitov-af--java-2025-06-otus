@@ -16,10 +16,10 @@ import ru.aaf.finshop.proto.RemoteServiceGrpc;
 public class BankClientRestController {
     private static final Logger logger = LoggerFactory.getLogger(BankClientRestController.class);
 
-    private final DataProcessor<StringValue> dataProcessor;
+    private final DataProcessor<LoanClaimDto> dataProcessor;
     private final ManagedChannel channel;
 
-    public BankClientRestController(DataProcessor<StringValue> dataProcessor, ManagedChannel channel) {
+    public BankClientRestController(DataProcessor<LoanClaimDto> dataProcessor, ManagedChannel channel) {
         this.dataProcessor = dataProcessor;
         this.channel = channel;
     }

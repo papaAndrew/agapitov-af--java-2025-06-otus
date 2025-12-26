@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import ru.aaf.finshop.datacenter.model.LoanClaim;
 
 @Component
 @EnableScheduling
@@ -28,7 +27,7 @@ public class JobLoanClamFirstUpdate extends AbstractLoanStatusProcessor {
     protected void process() {
         log.info("process: fromStatus : {}", STATUS_NEW);
 
-        Mono.just(0)
+        Mono.just(STATUS_NEW)
                 .flatMapMany(dataService::loadClaimsByStatus)
                 .doOnNext(loanClaim -> log.info("process: fetch: {}", loanClaim))
                 .flatMap(loanClaim -> dataService.updateClaimStatus(loanClaim.id(), loanClaim.status() + 1))
@@ -39,5 +38,4 @@ public class JobLoanClamFirstUpdate extends AbstractLoanStatusProcessor {
                         error -> log.error("Status delivery or updating error", error),
                         () -> log.info("Scheduled claim processing completed"));
     }
-
 }

@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 public class JobLoanClamSecondUpdate extends AbstractLoanStatusProcessor {
     private static final Logger log = LoggerFactory.getLogger(JobLoanClamSecondUpdate.class);
 
-    private static final int STATUS_NEW = 1;
+    private static final int STATUS_INWORK = 1;
 
     private final DataService dataService;
     private final BusProducer busProducer;
@@ -22,12 +22,12 @@ public class JobLoanClamSecondUpdate extends AbstractLoanStatusProcessor {
         this.busProducer = busProducer;
     }
 
-    @Scheduled(initialDelay = 10000, fixedDelay = 60000)
+    @Scheduled(initialDelay = 30000, fixedDelay = 60000)
     @Override
     protected void process() {
-        log.info("process: fromStatus : {}", STATUS_NEW);
+        log.info("process: fromStatus : {}", STATUS_INWORK);
 
-        Mono.just(0)
+        Mono.just(STATUS_INWORK)
                 .flatMapMany(dataService::loadClaimsByStatus)
                 .doOnNext(loanClaim -> log.info("process: fetch: {}", loanClaim))
                 .flatMap(loanClaim -> dataService.updateClaimStatus(loanClaim.id(), loanClaim.status() + 1))
@@ -38,5 +38,4 @@ public class JobLoanClamSecondUpdate extends AbstractLoanStatusProcessor {
                         error -> log.error("Status delivery or updating error", error),
                         () -> log.info("Scheduled claim processing completed"));
     }
-
 }

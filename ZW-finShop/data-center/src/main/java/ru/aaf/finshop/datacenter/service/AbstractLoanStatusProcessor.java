@@ -16,8 +16,7 @@ public abstract class AbstractLoanStatusProcessor {
         try {
             return objectMapper.writeValueAsString(loanClaim);
         } catch (Exception e) {
-            return String.format("{\"status\":\"%s\",\"trace\":\"%s\"}",
-                    "Failed to serialize LoanClaim", e);
+            return String.format("{\"status\":\"%s\",\"trace\":\"%s\"}", "Failed to serialize LoanClaim", e);
         }
     }
 }
