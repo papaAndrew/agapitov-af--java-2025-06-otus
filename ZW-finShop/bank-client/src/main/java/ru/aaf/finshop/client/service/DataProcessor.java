@@ -7,11 +7,7 @@ import ru.aaf.finshop.client.controllers.StringValue;
 
 public interface DataProcessor<T> {
 
-    Mono<T> processMono(T data);
-
-    Flux<T> processFlux(List<T> data);
-
     Flux<T> ackClaimStatus();
 
-    void putClaimStatus(StringValue stringValue);
+    void putClaimStatus(T stringValue);
 }

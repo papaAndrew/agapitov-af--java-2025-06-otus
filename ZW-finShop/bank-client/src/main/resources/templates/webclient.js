@@ -3,7 +3,7 @@ const streamErr = e => {
     console.warn(e);
 }
 
-fetch("http://localhost:8020/stream").then((response) => {
+fetch("http://localhost:8020/status").then((response) => {
     return can.ndjsonStream(response.body);
 }).then(dataStream => {
     const reader = dataStream.getReader();

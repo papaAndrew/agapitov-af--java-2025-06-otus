@@ -45,11 +45,9 @@ public class BankClientRestController {
         // loanClaim.amount());
     }
 
-    @GetMapping(value = "/stream", produces = MediaType.APPLICATION_NDJSON_VALUE)
-    public Flux<StringValue> data() {
+    @GetMapping(value = "/status", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    public Flux<LoanClaimDto> loanClaimDtoFlux() {
         logger.info("request for data");
-        //        var srcRequest = List.of(new StringValue("Одобрям :-)"));
-
         return dataProcessor.ackClaimStatus();
     }
 }
