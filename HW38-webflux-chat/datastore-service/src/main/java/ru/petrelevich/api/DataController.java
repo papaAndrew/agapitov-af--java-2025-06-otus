@@ -61,5 +61,8 @@ public class DataController {
                 .map(message -> new MessageDto(message.msgText()))
                 .doOnNext(msgDto -> log.info("msgDto:{}", msgDto))
                 .subscribeOn(workerPool);
+
+
+
     }
 }
