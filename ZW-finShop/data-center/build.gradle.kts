@@ -4,6 +4,7 @@ plugins {
     id("idea")
     id("org.springframework.boot")
     id("com.google.protobuf")
+    id("com.google.cloud.tools.jib") version "3.5.2"
 }
 
 val errorProneAnnotations: String by project
@@ -39,6 +40,25 @@ dependencies {
     runtimeOnly("org.flywaydb:flyway-database-postgresql")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
+}
+
+
+jib {
+    container {
+        creationTime.set("USE_CURRENT_TIMESTAMP")
+    }
+    from {
+        image = "bellsoft/liberica-openjdk-alpine-musl:21.0.1"
+    }
+
+    to {
+        image = "papaandrew/finshop-data-center"
+        tags = setOf(project.version.toString())
+        auth {
+            username = System.getenv("GITHUB_USERNAME")
+            password = System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
 
 val protoSrcDir = "$projectDir/build/generated/sources/proto"
@@ -81,6 +101,7 @@ protobuf {
         }
     }
 }
+
 
 tasks.named("generateProto") {
     dependsOn(tasks.named("processResources"))
