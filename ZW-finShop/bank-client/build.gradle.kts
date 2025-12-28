@@ -9,7 +9,7 @@ val protoSrcDir = "$projectDir/build/generated/sources/proto"
 plugins {
     id("idea")
     id("com.google.protobuf")
-
+    id("com.google.cloud.tools.jib") version "3.5.2"
 }
 
 dependencies {
@@ -35,6 +35,23 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 }
 
+jib {
+    container {
+        creationTime.set("USE_CURRENT_TIMESTAMP")
+    }
+    from {
+        image = "bellsoft/liberica-openjdk-alpine-musl:21.0.1"
+    }
+
+    to {
+        image = "papaandrew/finshop-bank-client"
+        tags = setOf(project.version.toString())
+        auth {
+            username = System.getenv("GITHUB_USERNAME")
+            password = System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
 idea {
     module {
         sourceDirs = sourceDirs.plus(file("$protoSrcDir/main/java"))
