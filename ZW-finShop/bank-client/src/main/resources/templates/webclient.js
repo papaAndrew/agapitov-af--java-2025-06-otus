@@ -20,6 +20,7 @@ fetch("http://localhost:8020/status").then((response) => {
 const render = value => {
     document.getElementById('claimId').textContent = value.id;
     document.getElementById('status').textContent = value.status;
-    document.getElementById('period').textContent = value.period;
-    document.getElementById('amount').textContent = value.amount;
+    document.getElementById('period').value = value.period;
+    document.getElementById('amount').value = value.amount;
+    document.getElementById('btnSend').textContent = 'Новый';
 };

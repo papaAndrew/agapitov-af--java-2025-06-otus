@@ -1,22 +1,23 @@
 grpc:
   server:
-    port: 8190
+    port: ${PORT:8190}
 spring:
   main:
     allow-bean-definition-overriding: true
+  kafka:
+    bootstrap-servers: ${KAFKA_CONNECT:localhost:9092}
   r2dbc:
-    url: r2dbc:postgresql://localhost:5430/demoDB
-    username: usr
-    password: pwd
+    url: "${PG_R2DBC_CONNECT:r2dbc:postgresql://localhost:5430/demoDB}"
+    username: "${PG_USERNAME:usr}"
+    password: "${PG_PASSWORD:pwd}"
   datasource:
-    url: jdbc:postgresql://localhost:5430/demoDB
-    username: usr
-    password: pwd
-
+    url: "${PG_CONNECT:jdbc:postgresql://localhost:5430/demoDB}"
+    username: "${PG_USERNAME:usr}"
+    password: "${PG_PASSWORD:pwd}"
   flyway:
-    url: jdbc:postgresql://localhost:5430/demoDB
-    user: usr
-    password: pwd
+    url: "${PG_CONNECT:jdbc:postgresql://localhost:5430/demoDB}"
+    user: "${PG_USERNAME:usr}"
+    password: "${PG_PASSWORD:pwd}"
 
 logging:
   level:

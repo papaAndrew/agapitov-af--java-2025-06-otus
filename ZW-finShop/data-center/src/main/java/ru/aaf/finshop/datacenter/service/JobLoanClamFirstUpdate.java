@@ -22,7 +22,7 @@ public class JobLoanClamFirstUpdate extends AbstractLoanStatusProcessor {
         this.busProducer = busProducer;
     }
 
-    @Scheduled(initialDelay = 5000, fixedDelay = 60000)
+    @Scheduled(initialDelay = 10000, fixedDelay = 40000)
     @Override
     protected void process() {
         log.info("process: fromStatus : {}", STATUS_NEW);
