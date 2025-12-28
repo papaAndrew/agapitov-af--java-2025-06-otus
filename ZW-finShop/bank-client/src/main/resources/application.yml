@@ -2,10 +2,10 @@ server:
   port: 8020
 
 datacenter:
-  url: localhost:8190
+  url: "${DATA_CENTER_CONNECT:localhost:8190}"
 
 spring:
   kafka:
-    bootstrap-servers: "localhost:9092"
+    bootstrap-servers: "${KAFKA_CONNECT:localhost:9092}"
     consumer:
       group-id: "bankClient"
