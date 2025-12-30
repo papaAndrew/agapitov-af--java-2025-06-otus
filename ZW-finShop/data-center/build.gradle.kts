@@ -46,15 +46,6 @@ dependencies {
 jib {
     container {
         creationTime.set("USE_CURRENT_TIMESTAMP")
-        ports = listOf("8020")
-        environment = mapOf(
-            "PORT" to "8190",
-            "KAFKA_CONNECT" to "",
-            "PG_R2DBC_CONNECT" to "",
-            "PG_CONNECT" to "",
-            "PG_USERNAME" to "",
-            "PG_PASSWORD" to ""
-        )
     }
     from {
         image = "bellsoft/liberica-openjdk-alpine-musl:21.0.1"
@@ -64,7 +55,7 @@ jib {
         image = "papaandrew/finshop-data-center"
         tags = setOf(project.version.toString())
         auth {
-            username = System.getenv("GITHUB_USERNAME")
+            username = "papaandrew"
             password = System.getenv("GITHUB_TOKEN")
         }
     }

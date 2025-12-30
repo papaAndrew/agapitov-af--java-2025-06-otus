@@ -7,7 +7,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import ru.aaf.finshop.client.domain.LoanClaimDto;
 
-@SuppressWarnings("java:S125")
+
 @Slf4j
 @Service
 public class KafkaReceiver {
@@ -19,10 +19,6 @@ public class KafkaReceiver {
     public KafkaReceiver(DataProcessor<LoanClaimDto> dataProcessor) {
         this.dataProcessor = dataProcessor;
     }
-
-    //    public KafkaReceiver(Consumer<StringValue> valueConsumer) {
-    //        this.valueConsumer = valueConsumer;
-    //    }
 
     @KafkaListener(id = "bcl-00", topics = "bank_client")
     public void listen(String msg) {

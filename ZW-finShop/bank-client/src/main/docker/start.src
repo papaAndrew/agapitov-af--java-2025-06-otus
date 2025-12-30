@@ -1,0 +1,3 @@
+docker run --rm --name finshop-bank-client \
+--network="host" \
+-d "papaandrew/finshop-bank-client:latest"

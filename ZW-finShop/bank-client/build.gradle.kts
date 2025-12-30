@@ -38,12 +38,6 @@ dependencies {
 jib {
     container {
         creationTime.set("USE_CURRENT_TIMESTAMP")
-        ports = listOf("8020")
-        environment = mapOf(
-            "PORT" to "8020",
-            "KAFKA_CONNECT" to "", // Will be set via Docker at runtime
-            "DATA_CENTER_CONNECT" to "" // Will be set via Docker at runtime
-        )
     }
     from {
         image = "bellsoft/liberica-openjdk-alpine-musl:21.0.1"
