@@ -1,0 +1,24 @@
+grpc:
+  server:
+    port: ${PORT:8190}
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  kafka:
+    bootstrap-servers: ${KAFKA_CONNECT:localhost:9092}
+  r2dbc:
+    url: "${PG_R2DBC_CONNECT:r2dbc:postgresql://localhost:5430/demoDB}"
+    username: "${PG_USERNAME:usr}"
+    password: "${PG_PASSWORD:pwd}"
+  datasource:
+    url: "${PG_CONNECT:jdbc:postgresql://localhost:5430/demoDB}"
+    username: "${PG_USERNAME:usr}"
+    password: "${PG_PASSWORD:pwd}"
+  flyway:
+    url: "${PG_CONNECT:jdbc:postgresql://localhost:5430/demoDB}"
+    user: "${PG_USERNAME:usr}"
+    password: "${PG_PASSWORD:pwd}"
+
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: TRACE

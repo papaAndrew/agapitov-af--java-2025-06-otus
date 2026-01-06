@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заявка на кредит Онлайн - Вход</title>
+
+    <style>
+        /* Минимальные стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 20px;
+            font-weight: normal;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="login-box">
+        <h1 class="login-title">Заявка на кредит Онлайн</h1>
+
+        <!-- Сообщение об ошибке (отображается только при наличии ошибки) -->
+        <div th:if="${param.error}" class="error-message active">
+            Неверный логин или пароль
+        </div>
+
+        <!-- Форма входа -->
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Пользователь</label>
+                <input type="text"
+                       id="username"
+                       name="username"
+                       th:value="${username}"
+                       placeholder="Введите логин"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       placeholder="Введите пароль"
+                       required>
+            </div>
+
+            <button type="submit" class="login-btn">Войти</button>
+        </form>
+
+        <div class="footer">
+            Для доступа к системе требуется авторизация
+        </div>
+    </div>
+</div>
+
+<script>
+    // Простой скрипт для автоматического фокуса
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('username').focus();
+    });
+
+    // Базовая валидация формы
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        if (!username) {
+            e.preventDefault();
+            document.getElementById('username').focus();
+            return false;
+        }
+
+        if (!password) {
+            e.preventDefault();
+            document.getElementById('password').focus();
+            return false;
+        }
+
+        return true;
+    });
+</script>
+</body>
+</html>

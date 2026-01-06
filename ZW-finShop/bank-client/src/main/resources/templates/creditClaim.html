@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заявка на кредит</title>
+    <script src="/can-ndjson-stream_1.6.js"></script>
+    <script src="/webclient.js"></script>
+    <script src="/app.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #2c3e50;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .info-value {
+            color: #6c757d;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+        }
+        input[type="text"],
+        input[type="number"] {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 3px;
+            font-size: 14px;
+        }
+        input[readonly] {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Личный кабинет клиента</h1>
+
+    <!-- Client -->
+    <form id="client-info" th:object="${clientView}"  th:action="@{/client/save}" th:method="post" accept-charset="utf-8">
+
+        <div class="info-row">
+            <label for="profileId" class="info-label">Profile ID:</label>
+            <input id="profileId" name="profileId" th:value="*{profileId}" readonly>
+        </div>
+        <div class="info-row">
+            <label class="info-label">Client ID:</label>
+            <input id="clientId" name="clientId" th:value="*{clientId}" readonly>
+        </div>
+
+        <div class="info-row">
+            <label for="clientName" class="info-label">Имя</label>
+            <input type="text" id="clientName" name="clientName" th:value="*{clientName}" required>
+        </div>
+
+        <div class="info-row">
+            <label for="passport" class="info-label">Паспорт</label>
+            <input type="text" id="passport" name="passport" th:value="*{passport}">
+        </div>
+        <button type="submit">Сохранить</button>
+    </form>
+    <h2>Заявка на кредит</h2>
+    <!-- Claim -->
+    <div class="form">
+        <div class="info-row">
+            <label class="info-label" for="period"> Срок</label>
+            <input type="number" id="period" name="period">
+        </div>
+        <div class="info-row">
+            <label for="amount">Запрашиваемая сумма</label>
+            <input type="number" id="amount" name="amount">
+        </div>
+        <div class="info-row">
+            <span>Номер заявки</span>
+            <span id="claimId"></span>
+        </div>
+        <div class="info-row">
+            <span>Статус:</span>
+            <span id="status">Новый</span>
+        </div>
+
+        <!--<button type="submit">Отправить</button>-->
+        <button id="btnSend" onclick="saveClaim()">Запросить</button>
+
+    </div>
+</div>
+</body>
+</html>

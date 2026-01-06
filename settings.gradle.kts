@@ -43,3 +43,6 @@ include("HW38-webflux-chat:client-service")
 findProject(":HW38-webflux-chat:client-service")?.name = "client-service"
 include("HW38-webflux-chat:datastore-service")
 findProject(":HW38-webflux-chat:datastore-service")?.name = "datastore-service"
+
+include("ZW-finShop:bank-client")
+include("ZW-finShop:data-center")

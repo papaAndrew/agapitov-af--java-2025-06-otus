@@ -1,0 +1,9 @@
+1. Connect demoDB
+`docker exec -it pg-docker psql -U usr -d demoDB`
+
+```
+select * from profile;
+```
+
+Push IMG
+1. download helper

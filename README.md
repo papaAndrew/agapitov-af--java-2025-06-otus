@@ -10,7 +10,7 @@
 
 ---
 
-## 1. HW01-Gradle. Проект gradle с модульной структурой 
+## 1. HW01-Gradle. Проект gradle с модульной структурой
 ### Домашнее задание
 #### Цель:
 научиться создавать проект Gradle, подготовиться к выполнению домашних заданий.
@@ -95,7 +95,7 @@ guava
 
 Есть готовое приложение (модуль homework)
 * Запустите его с размером хипа 256 Мб и посмотрите в логе время выполнения.
-Пример вывода: 
+  Пример вывода:
 ```
 spend msec:18284, sec:18
 ```
@@ -122,8 +122,8 @@ spend msec:18284, sec:18
 
 ```java
 class TestLogging implements TestLoggingInterface {
-@Log
-public void calculation(int param) {};
+    @Log
+    public void calculation(int param) {};
 }
 ```
 
@@ -133,7 +133,7 @@ public void calculation(int param) {};
 ```java
 class Demo {
     public void action() {
-    new TestLogging().calculation(6);
+        new TestLogging().calculation(6);
     }
 }
 ```
@@ -205,7 +205,7 @@ P.S.
 <br>Более подробно смотрите в примерах к вебинару.
 
 
-## 9. HW18-JDBC. Самодельный ORM 
+## 9. HW18-JDBC. Самодельный ORM
 ### Домашнее задание
 ### Цель:
 Научиться работать с jdbc.
@@ -291,6 +291,6 @@ Hibernate должен создать только три таблицы: для
 
 [Домашнее задание](HW34-multiProcess/README.md)
 
-## 18. HW38-webflux-chat. 
+## 18. HW38-webflux-chat.
 
 [Домашнее задание](HW38-webflux-chat/README.md)
